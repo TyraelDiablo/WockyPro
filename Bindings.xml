@@ -1,0 +1,6 @@
+<Bindings>
+    <Binding name="WOCKY_TOGGLE" header="WOCKY" category="ADDONS">WockyPro_Toggle()</Binding>
+    <Binding name="WOCKY_NEXT" category="ADDONS">WockyPro_Next()</Binding>
+    <Binding name="WOCKY_PREV" category="ADDONS">WockyPro_Prev()</Binding>
+    <Binding name="WOCKY_ARROW" category="ADDONS">WockyPro_ToggleArrow()</Binding>
+</Bindings>

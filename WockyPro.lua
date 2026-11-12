@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "3.0.0"
+local VERSION = "3.1.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -702,6 +702,7 @@ local function TalentRows(spec, level)
 end
 
 local function SetMapPing(zone, x, y, npcName)
+    if WockyAPI and WockyAPI.SetArrowTarget then pcall(WockyAPI.SetArrowTarget, zone, x, y, npcName, true) end
     if Cfg("printCoords") then
         print("|cFF8787ED[Wocky]|r " .. npcName .. " -> |cFF00FFFF" .. zone .. " (" .. x .. "," .. y .. ")|r")
     end
@@ -842,15 +843,25 @@ local function MakeInfoRows(count)
         fs:SetJustifyH("LEFT")
         fs:SetJustifyV("TOP")
         b.text = fs
+        local hl = b:CreateTexture(nil, "HIGHLIGHT")
+        hl:SetAllPoints(b)
+        hl:SetColorTexture(1, 1, 1, 0.07)
         b:SetScript("OnEnter", function(self)
-            if not self.tip then return end
+            if not self.tip and not self.clickHint then return end
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            for _, line in ipairs(self.tip) do
+            for _, line in ipairs(self.tip or {}) do
                 GameTooltip:AddLine(line[1], line[2] or 1, line[3] or 1, line[4] or 1, true)
             end
+            if self.clickHint then GameTooltip:AddLine(self.clickHint, 0.45, 0.8, 1) end
             GameTooltip:Show()
         end)
         b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        b:SetScript("OnClick", function(self, button)
+            if self.onClick then pcall(self.onClick, button) end
+        end)
+        b:RegisterForDrag("LeftButton")
+        b:SetScript("OnDragStart", function() local f = WockyUI:GetScript("OnDragStart"); if f then f(WockyUI) end end)
+        b:SetScript("OnDragStop", function() local f = WockyUI:GetScript("OnDragStop"); if f then f(WockyUI) end end)
         b:Hide()
         list[i] = b
     end
@@ -863,9 +874,13 @@ local function SetInfoRows(rows, data)
         if d then
             b.text:SetText(d.text)
             b.tip = d.tip
+            b.onClick = d.onClick
+            b.clickHint = d.clickHint
             b:Show()
         else
             b.tip = nil
+            b.onClick = nil
+            b.clickHint = nil
             b:Hide()
         end
     end
@@ -959,7 +974,7 @@ local function Layout(questCount, profCount, talentCount)
         xpText:SetPoint("TOPLEFT", WockyUI, "TOPLEFT", 16, -y)
         y = y + TextH(xpText) + 4
     end
-    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown()
+    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown() or (WockyAPI and WockyAPI.hearthBtn and WockyAPI.hearthBtn:IsShown())
     local moneyVisible = moneyText:IsShown()
     if stonesVisible or moneyVisible then
         local h = stonesVisible and 30 or 16
@@ -976,6 +991,7 @@ local function Layout(questCount, profCount, talentCount)
         remindText:SetPoint("TOPLEFT", WockyUI, "TOPLEFT", 16, -y)
         y = y + TextH(remindText) + 4
     end
+    if WockyAPI and WockyAPI.ExtraLayout then y = WockyAPI.ExtraLayout(y) or y end
     y = y + 2
     local collapsed = Cfg("collapsed")
     local function Section(header, buttons, count, enabled, stackFn)
@@ -1109,6 +1125,10 @@ local function UpdateXP()
             parts[#parts + 1] = L("XP_ETA", string.format("%d:%02d", hrs, mins))
         end
     end
+    if WockyAPI and WockyAPI.XPExtra then
+        local ok, extra = pcall(WockyAPI.XPExtra, cur, max)
+        if ok and extra then parts[#parts + 1] = extra end
+    end
     xpText:SetText(table.concat(parts, "  |cFF666666|||r  "))
 end
 
@@ -1132,6 +1152,7 @@ local function BuildReminders()
         local pending = WockyDB and WockyDB.train and WockyDB.train[CharKey()]
         if pending then list[#list + 1] = L("REMIND_TRAIN", pending) end
     end)
+    if WockyAPI and WockyAPI.ExtraReminders then pcall(WockyAPI.ExtraReminders, list) end
     return list
 end
 
@@ -1345,6 +1366,7 @@ local function UpdateExtras(relayout)
     UpdateXP()
     UpdateStones()
     UpdateMoney()
+    if WockyAPI and WockyAPI.OnExtras then pcall(WockyAPI.OnExtras) end
     UpdateReminders()
     if relayout then Layout(lastQ, lastP, lastT) end
 end
@@ -1533,6 +1555,7 @@ local function ProfRow(id, p)
     local maxRank = p and p.max or 0
     local idx = ProfStepIndex(guide, rank)
     local minC = ProfMinColor(id)
+    local mapZone
 
     local tip = { { name, 1, 0.82, 0 } }
     if not NO_COLOR_PROFS[id] then
@@ -1576,6 +1599,7 @@ local function ProfRow(id, p)
             local parts = {}
             for i = 1, math.min(2, #list) do parts[#parts + 1] = Colorize(list[i].name, list[i].color) end
             text = text .. prefix .. table.concat(parts, ", ") .. " |cFF888888- " .. list[1].zone .. "|r"
+            mapZone = string.match(list[1].zone, "^([^,]+)")
         else
             text = text .. prefix
         end
@@ -1624,7 +1648,17 @@ local function ProfRow(id, p)
     if maxRank > 0 and maxRank < 300 and rank >= maxRank - 25 then
         text = text .. "  |cFFFF7D0A" .. L("PROF_TRAIN", maxRank + 75) .. "|r"
     end
-    return { text = text, tip = tip }
+    local row = { text = text, tip = tip }
+    if id == 182 then
+        if mapZone then
+            row.onClick = function() if WockyAPI and WockyAPI.OpenMapZone then WockyAPI.OpenMapZone(mapZone) end end
+            row.clickHint = L("CLICK_MAP")
+        end
+    elseif id ~= 393 and id ~= 356 then
+        row.onClick = function() if WockyAPI and WockyAPI.OpenProfession then WockyAPI.OpenProfession(id, name) end end
+        row.clickHint = L("CLICK_PROF")
+    end
+    return row
 end
 
 local function ProfessionRows()
@@ -1781,7 +1815,7 @@ UpdateWockyGuide = function(level)
     UpdateShards()
 
     local spec = GetBuildSpec()
-    questHeader:SetText("|cFFFFD100[" .. L("QUESTS_HEADER", level) .. "]|r")
+    questHeader:SetText("|cFFFFD100[" .. L("QUESTS_HEADER", level) .. "]|r" .. ((WockyAPI and WockyAPI.QuestSuffix and WockyAPI.QuestSuffix()) or ""))
     profHeader:SetText("|cFF00FF00[" .. L("PROF_HEADER", level) .. "]|r")
 
     local raceData = WockyGuideDB and WockyGuideDB[RouteKey()]
@@ -1795,12 +1829,17 @@ UpdateWockyGuide = function(level)
     end
     local pCount = SetInfoRows(profRows, ProfessionRows())
     local tData, unspent = TalentRows(spec, level)
+    for _, r in ipairs(tData) do
+        r.onClick = function() if WockyAPI and WockyAPI.OpenTalents then WockyAPI.OpenTalents() end end
+        r.clickHint = L("CLICK_TALENTS")
+    end
     local tCount = SetInfoRows(talentRows, tData)
     local tHeader = L("TALENT_HEADER", spec, level)
     if unspent and unspent > 0 then
         tHeader = tHeader .. " |cFF00FF00- " .. L("TALENT_UNSPENT", unspent) .. "|r"
     end
     talentHeader:SetText("|cFFFF7D0A[" .. tHeader .. "]|r")
+    if WockyAPI and WockyAPI.OnGuide then pcall(WockyAPI.OnGuide, level, data) end
     UpdateExtras(false)
     Layout(qCount, pCount, tCount)
     C_Timer.After(0.05, function() Layout(lastQ, lastP, lastT) end)
@@ -2393,6 +2432,7 @@ ApplyAll = function()
     PositionMinimapButton()
 
     UpdateWockyGuide(viewLevel)
+    if WockyAPI and WockyAPI.OnApply then pcall(WockyAPI.OnApply) end
     RefreshSettings()
 end
 
@@ -2602,3 +2642,22 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         UpdateWockyGuide(viewLevel)
     end
 end)
+
+---------------------------------------------------------------------------
+-- Shared with WockyExtras.lua
+---------------------------------------------------------------------------
+WockyAPI = {
+    VERSION = VERSION, MAX_LEVEL = MAX_LEVEL, DEFAULTS = DEFAULTS, MAP_IDS = MAP_IDS,
+    Cfg = Cfg, SetCfg = SetCfg, L = L, fonts = fonts, NewFS = NewFS, StyleButton = StyleButton, TextH = TextH,
+    WockyUI = WockyUI, statusRow = statusRow, bagButton = bagButton, hsBtn = hsBtn, ssBtn = ssBtn,
+    charInfoText = charInfoText, charSpecText = charSpecText,
+    MakeStoneButton = MakeStoneButton, SetStoneCD = SetStoneCD, GetItemCD = GetItemCD, ItemIcon = ItemIcon,
+    ShortTime = ShortTime, LongTime = LongTime, CoinText = CoinText, BagCounts = BagCounts,
+    CharKey = CharKey, RouteKey = RouteKey, DoneTable = DoneTable,
+    UpdateWockyGuide = UpdateWockyGuide, ApplyAll = ApplyAll, ToggleSettings = ToggleSettings,
+    AddToggle = AddToggle, AddStepper = AddStepper, RefreshSettings = RefreshSettings,
+    pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap,
+    questHeader = questHeader, profHeader = profHeader, talentHeader = talentHeader,
+    shardText = shardText, moneyBtn = moneyBtn,
+    GetViewLevel = function() return viewLevel end
+}

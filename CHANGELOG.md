@@ -1,5 +1,25 @@
 # WockyPro Changelog
 
+## 3.1.0
+- **Clickable guide:** click a talent row to open the talent window, click a profession to open that profession's window (if the game does not allow it, your spellbook opens instead). Clicking Herbalism shows the best zone on the map.
+- **Clickable labels:** quest header opens the quest log, profession header your professions, talent header and spec line the talent window, your name the character window, Soul Shards and money your bags, the dungeon line the map. Hover any of them to see what a click does.
+- **Mouse wheel** over the window flips through the levels
+- **Steps tick themselves:** setting your hearthstone, opening your warlock trainer or finding a new flight path checks the matching route step (can be turned off)
+- Left-click the arrow to see its target on the world map
+- **Navigation arrow:** points to the current step's target, or to any NPC or place name you click. Shows the distance in yards, says "Travel to ..." when the target is in another zone, and turns green when you face the right way. Drag to move, right-click to clear the target or hide it, size in the settings, `/wocky arrow` to toggle.
+- **Kills to level:** estimate on the XP line, based on your recent kills
+- **Dungeon suggestions:** dungeons for the level you are looking at (hover for level ranges and locations)
+- **Route progress:** percentage of route steps you have checked
+- **Hearthstone icon:** bind location and cooldown
+- **Bags button:** shows your free bag slots (soul bags not counted)
+- New reminders when your bags or quest log are almost full
+- **Vendor helper:** sells gray items and repairs automatically (both can be turned off in the settings)
+- **Upgrade score on item tooltips:** compares an item with what you wear, using leveling Warlock stat weights. Only shown for gear a Warlock can use.
+- **Key bindings:** show/hide the guide, next and previous level, show/hide the arrow (Key Bindings > AddOns)
+- **Addon compartment and Blizzard settings:** WockyPro can be opened from the addon compartment and from the game's options menu
+- `/wocky help` lists all commands, `/wocky news` shows what is new; a chat notice appears after an update
+- Version number now comes from the release tag
+
 ## 3.0.0
 - Leveling routes for every Warlock race in WoW: Forever, picked automatically from your race:
   - Undead: Deathknell, Tirisfal Glades, Silverpine Forest

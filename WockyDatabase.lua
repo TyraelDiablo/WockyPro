@@ -549,3 +549,27 @@ WockyGuideDB["ORC"] = HORDE_ORC
 WockyGuideDB["TROLL"] = HORDE_ORC
 WockyGuideDB["HUMAN"] = HUMAN
 WockyGuideDB["GNOME"] = GNOME
+
+-- Dungeons: { name, min level, max level, where, faction (nil = both) }
+WockyDungeons = {
+    { "Ragefire Chasm", 13, 18, "Orgrimmar", "Horde" },
+    { "Wailing Caverns", 17, 24, "The Barrens" },
+    { "The Deadmines", 17, 26, "Westfall" },
+    { "Shadowfang Keep", 22, 30, "Silverpine Forest" },
+    { "Blackfathom Deeps", 24, 32, "Ashenvale" },
+    { "The Stockade", 24, 32, "Stormwind City", "Alliance" },
+    { "Gnomeregan", 29, 38, "Dun Morogh" },
+    { "Razorfen Kraul", 29, 38, "The Barrens" },
+    { "Scarlet Monastery", 30, 45, "Tirisfal Glades" },
+    { "Razorfen Downs", 37, 46, "The Barrens" },
+    { "Uldaman", 41, 51, "Badlands" },
+    { "Zul Farrak", 44, 54, "Tanaris" },
+    { "Maraudon", 46, 55, "Desolace" },
+    { "Sunken Temple", 50, 56, "Swamp of Sorrows" },
+    { "Blackrock Depths", 52, 60, "Blackrock Mountain" },
+    { "Lower Blackrock Spire", 55, 60, "Blackrock Mountain" },
+    { "Dire Maul", 55, 60, "Feralas" },
+    { "Scholomance", 58, 60, "Western Plaguelands" },
+    { "Stratholme", 58, 60, "Eastern Plaguelands" },
+    { "Upper Blackrock Spire", 58, 60, "Blackrock Mountain" }
+}

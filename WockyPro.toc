@@ -7,7 +7,11 @@
 ## X-Icon-Credit: Burning skull icon by Skoll, game-icons.net, CC BY 3.0
 ## X-Curse-Project-ID: 1797862
 ## SavedVariables: WockyDB
+## AddonCompartmentFunc: WockyPro_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: WockyPro_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: WockyPro_OnAddonCompartmentLeave
 
 WockyLocale.lua
 WockyDatabase.lua
 WockyPro.lua
+WockyExtras.lua
