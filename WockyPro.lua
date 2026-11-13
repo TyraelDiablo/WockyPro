@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "3.1.0"
+local VERSION = "3.1.1"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")

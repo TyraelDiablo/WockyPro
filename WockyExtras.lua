@@ -221,8 +221,35 @@ end
 ---------------------------------------------------------------------------
 local killXP = {}
 
+-- Builds a Lua pattern from a game format string such as "%s dies, you gain %d experience."
+local function FormatToPattern(fmt)
+    if type(fmt) ~= "string" or fmt == "" then return nil end
+    fmt = string.gsub(fmt, "%%%d%$", "%%")
+    local p = string.gsub(fmt, "([%(%)%.%[%]%*%+%-%?%^%$])", "%%%1")
+    p = string.gsub(p, "%%s", "(.-)")
+    p = string.gsub(p, "%%d", "(%%d+)")
+    return "^" .. p
+end
+
+local killPattern
+local function KillXPFromMessage(msg)
+    if type(msg) ~= "string" then return nil end
+    if killPattern == nil then
+        killPattern = FormatToPattern(COMBATLOG_XPGAIN_FIRSTPERSON) or false
+    end
+    if killPattern then
+        local a, b = string.match(msg, killPattern)
+        local n = tonumber(b) or tonumber(a)
+        if n then return n end
+        return nil
+    end
+    -- the game string is missing: only lines that name a mob ("X dies, you gain ...") count
+    if string.find(msg, ",", 1, true) then return tonumber(string.match(msg, "(%d+)")) end
+    return nil
+end
+
 local function RecordKillXP(msg)
-    local n = tonumber(string.match(msg or "", "(%d+)"))
+    local n = KillXPFromMessage(msg)
     if n and n > 0 then
         killXP[#killXP + 1] = n
         if #killXP > 15 then table.remove(killXP, 1) end
@@ -270,6 +297,7 @@ dungeonText:SetPoint("TOPLEFT", dungeonBtn, "TOPLEFT", 0, 0)
 dungeonText:SetWidth(328)
 dungeonText:SetJustifyH("LEFT")
 local dungeonTip = {}
+local dungeonZone
 
 local function DungeonsFor(level)
     local faction = UnitFactionGroup and UnitFactionGroup("player")
@@ -287,6 +315,7 @@ local function UpdateDungeons(level)
     if not Cfg("showDungeons") or #list == 0 then
         dungeonText:SetText("")
         dungeonTip = {}
+        dungeonZone = nil
         return
     end
     local names = {}
@@ -309,7 +338,6 @@ dungeonBtn:SetScript("OnEnter", function(self)
     GameTooltip:Show()
 end)
 dungeonBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
-local dungeonZone
 dungeonBtn:SetScript("OnClick", function()
     if dungeonZone and W.OpenMapZone then W.OpenMapZone(dungeonZone) end
 end)
@@ -367,7 +395,9 @@ local function UpdateHearth()
     W.SetStoneCD(hearthBtn, s, d, r)
 
     local bind = (GetBindLocation and GetBindLocation()) or "?"
-    hearthBtn.tipTitle = "Hearthstone"
+    local hsName
+    pcall(function() hsName = GetItemInfo(HEARTHSTONE) end)
+    hearthBtn.tipTitle = hsName or "Hearthstone"
     if not has then
         hearthBtn.tipText = L("HEARTH_NONE") .. "\n" .. L("HEARTH_BIND", bind)
     elseif r > 0 then
@@ -743,7 +773,7 @@ end)
 ---------------------------------------------------------------------------
 -- Steps that tick themselves (hearthstone, trainer, flight path)
 ---------------------------------------------------------------------------
-local function AutoCheck(pattern, extra)
+local function AutoCheck(pattern, extra, skip)
     if not Cfg("autoCheck") then return end
     local route = WockyGuideDB and WockyGuideDB[W.RouteKey()]
     if not route then return end
@@ -759,7 +789,11 @@ local function AutoCheck(pattern, extra)
             for line in string.gmatch(e.quest, "[^\n]+") do
                 i = i + 1
                 local low = string.lower(line)
-                if string.find(low, pattern, 1, true) and (not extra or extra == "" or string.find(low, string.lower(extra), 1, true)) then
+                local skipped = false
+                for _, word in ipairs(skip or {}) do
+                    if string.find(low, word, 1, true) then skipped = true end
+                end
+                if not skipped and string.find(low, pattern, 1, true) and (not extra or extra == "" or string.find(low, string.lower(extra), 1, true)) then
                     local key = "Q" .. lvl .. ":" .. i
                     if not doneT[key] then
                         doneT[key] = true
@@ -853,20 +887,28 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
-    "Click a talent to open the talent window, click a profession to open its window",
-    "Clickable headers and labels: quest log, professions, character, bags, map",
-    "Mouse wheel over the window flips through the levels",
-    "Steps tick themselves when you set your hearthstone, visit your trainer or find a flight path",
-    "Navigation arrow that points to the current step or any map link you click",
-    "Kills to level on the XP line",
-    "Dungeon suggestions for your level",
-    "Route progress in percent",
-    "Hearthstone icon with bind location and cooldown",
-    "Free bag slots on the Bags button, bag and quest log warnings",
-    "Sells gray items and repairs at vendors",
-    "Upgrade score on item tooltips",
-    "Key bindings, addon compartment and Blizzard options entry",
-    "/wocky help and /wocky news"
+    { "3.1.1", {
+        "Clicking the dungeon line opens the map again",
+        "Opening your trainer no longer ticks class quest steps by mistake",
+        "Kills to level now counts only XP from kills (quest XP left out)",
+        "Hearthstone tooltip uses your game language"
+    } },
+    { "3.1.0", {
+        "Click a talent to open the talent window, click a profession to open its window",
+        "Clickable headers and labels: quest log, professions, character, bags, map",
+        "Mouse wheel over the window flips through the levels",
+        "Steps tick themselves when you set your hearthstone, visit your trainer or find a flight path",
+        "Navigation arrow that points to the current step or any map link you click",
+        "Kills to level on the XP line",
+        "Dungeon suggestions for your level",
+        "Route progress in percent",
+        "Hearthstone icon with bind location and cooldown",
+        "Free bag slots on the Bags button, bag and quest log warnings",
+        "Sells gray items and repairs at vendors",
+        "Upgrade score on item tooltips",
+        "Key bindings, addon compartment and Blizzard options entry",
+        "/wocky help and /wocky news"
+    } }
 }
 
 local function PrintHelp()
@@ -882,7 +924,10 @@ end
 
 local function PrintNews()
     Chat(L("NEWS_HEADER", W.VERSION))
-    for _, line in ipairs(NEWS) do print("  - " .. line) end
+    for i, entry in ipairs(NEWS) do
+        if i > 1 then print("|cFFFFD100" .. entry[1] .. "|r") end
+        for _, line in ipairs(entry[2]) do print("  - " .. line) end
+    end
 end
 
 local baseSlash = SlashCmdList["WOCKY"]
@@ -941,7 +986,7 @@ ev:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event == "TRAINER_SHOW" then
         local isProfession = false
         pcall(function() isProfession = IsTradeskillTrainer and IsTradeskillTrainer() end)
-        if not isProfession then AutoCheck("train") end
+        if not isProfession then AutoCheck("train", nil, { "quest", "prepare", "later" }) end
     elseif event == "UI_INFO_MESSAGE" then
         local msg = (type(arg2) == "string" and arg2) or (type(arg1) == "string" and arg1) or nil
         if msg and ERR_NEWTAXIPATH and msg == ERR_NEWTAXIPATH then AutoCheck("flight path") end

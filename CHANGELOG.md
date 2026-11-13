@@ -1,5 +1,12 @@
 # WockyPro Changelog
 
+## 3.1.1
+- Clicking the dungeon line opens the world map again (the click did nothing in 3.1.0)
+- Opening your warlock trainer no longer ticks class quest steps such as "Talk to your warlock trainer for the Voidwalker quest"
+- Kills to level counts only the XP from kills; quest and exploration XP no longer change the estimate
+- The Hearthstone icon tooltip shows the item name in your game language
+- `/wocky news` also lists the changes of the previous version
+
 ## 3.1.0
 - **Clickable guide:** click a talent row to open the talent window, click a profession to open that profession's window (if the game does not allow it, your spellbook opens instead). Clicking Herbalism shows the best zone on the map.
 - **Clickable labels:** quest header opens the quest log, profession header your professions, talent header and spec line the talent window, your name the character window, Soul Shards and money your bags, the dungeon line the map. Hover any of them to see what a click does.
