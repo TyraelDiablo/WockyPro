@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "3.1.1"
+local VERSION = "3.2.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -2659,5 +2659,7 @@ WockyAPI = {
     pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap,
     questHeader = questHeader, profHeader = profHeader, talentHeader = talentHeader,
     shardText = shardText, moneyBtn = moneyBtn,
-    GetViewLevel = function() return viewLevel end
+    GetViewLevel = function() return viewLevel end,
+    GetSpecText = GetSpecText, GetTreePoints = GetTreePoints, DetectProfessions = DetectProfessions,
+    ActiveLang = ActiveLang, ROUTE_NAMES = ROUTE_NAMES
 }

@@ -1,5 +1,12 @@
 # WockyPro Changelog
 
+## 3.2.0
+- **`/wocky here`:** prints your zone, subzone, map ID and coordinates, plus a line in the guide's own format. Compares your spot with the guide target of the level you are looking at.
+- `/wocky here <note>` saves the spot with a short note (up to 20 spots per account), `/wocky here clear` removes them
+- **`/wocky report`:** opens a window with everything a bug report needs: WockyPro and client version, language, race, class, level, route, talents, professions, changed settings, other loaded addons, the last WockyPro Lua error and your saved spots. Select all, Ctrl+C, paste.
+- WockyPro remembers its last Lua error across `/reload` (also reads BugSack / BugGrabber if you use it)
+- `/wocky help` lists the new commands
+
 ## 3.1.1
 - Clicking the dungeon line opens the world map again (the click did nothing in 3.1.0)
 - Opening your warlock trainer no longer ticks class quest steps such as "Talk to your warlock trainer for the Voidwalker quest"

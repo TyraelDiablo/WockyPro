@@ -887,6 +887,12 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "3.2.0", {
+        "/wocky here: your zone, map ID and coordinates, compared with the guide target",
+        "/wocky here <note> saves the spot with a note, /wocky here clear removes saved spots",
+        "/wocky report: one window with version, character, route, talents, professions, settings and the last WockyPro Lua error, ready to copy",
+        "The report also lists your saved spots, so route fixes can be sent in one piece"
+    } },
     { "3.1.1", {
         "Clicking the dungeon line opens the map again",
         "Opening your trainer no longer ticks class quest steps by mistake",
@@ -917,6 +923,7 @@ local function PrintHelp()
         { "/wocky", "HELP_TOGGLE" }, { "/wocky settings", "HELP_SETTINGS" },
         { "/wocky spec aff|demo|destro|auto", "HELP_SPEC" }, { "/wocky route auto|undead|orc|troll|human|gnome", "HELP_ROUTE" },
         { "/wocky arrow", "HELP_ARROW" }, { "/wocky news", "HELP_NEWS" },
+        { "/wocky here", "HELP_HERE" }, { "/wocky report", "HELP_REPORT" },
         { "/wocky talents", "HELP_TALENTS" }, { "/wocky prof", "HELP_PROF" }
     }
     for _, c in ipairs(cmds) do print("  |cFFFFD100" .. c[1] .. "|r - " .. L(c[2])) end
