@@ -887,6 +887,12 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "3.3.0", {
+        "Talent map: click the small book next to the talent header (or /wocky talentmap) to see the planned points for any level",
+        "Second build for every spec: turn on the group / dungeon build in the settings (Map & Talents tab)",
+        "Build sharing: /wocky build copies your talents as a short text; paste a friend's text and click Import to follow it",
+        "/wocky report now lists which build the guide follows"
+    } },
     { "3.2.0", {
         "/wocky here: your zone, map ID and coordinates, compared with the guide target",
         "/wocky here <note> saves the spot with a note, /wocky here clear removes saved spots",
@@ -926,6 +932,7 @@ local function PrintHelp()
         { "/wocky here", "HELP_HERE" }, { "/wocky report", "HELP_REPORT" },
         { "/wocky talents", "HELP_TALENTS" }, { "/wocky prof", "HELP_PROF" }
     }
+    for _, c in ipairs(W.EXTRA_HELP or {}) do cmds[#cmds + 1] = c end
     for _, c in ipairs(cmds) do print("  |cFFFFD100" .. c[1] .. "|r - " .. L(c[2])) end
 end
 

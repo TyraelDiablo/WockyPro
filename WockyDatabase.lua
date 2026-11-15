@@ -195,6 +195,72 @@ WockyBuilds = {
     }
 }
 
+-- Second build per spec for group play and dungeons (3.3.0).
+-- Same talents as the solo builds above, in an order that puts damage before
+-- the self-healing and pushback talents a solo Warlock needs early.
+-- TODO: first draft, check the order in game on WoW: Forever.
+WockyBuildsGroup = {
+    ["Affliction"] = {
+        { "Suppression", 4, "Affliction" },
+        { "Improved Corruption", 5, "Affliction" },
+        { "Improved Life Tap", 2, "Affliction" },
+        { "Pandemic", 3, "Affliction" },
+        { "Nightfall", 2, "Affliction" },
+        { "Malevolence", 5, "Affliction" },
+        { "Shadow Mastery", 5, "Affliction" },
+        { "Improved Bane of Agony", 2, "Affliction" },
+        { "Grim Reach", 2, "Affliction" },
+        { "Siphon Life", 1, "Affliction" },
+        { "Soul Siphon", 3, "Affliction" },
+        { "Fel Concentration", 3, "Affliction" },
+        { "Improved Drains", 3, "Affliction" },
+        { "Unholy Power", 5, "Demonology" },
+        { "Demonic Energies", 2, "Demonology" },
+        { "Fel Vitality", 3, "Demonology" },
+        { "Suppression", 5, "Affliction" }
+    },
+    ["Demonology"] = {
+        { "Suppression", 4, "Affliction" },
+        { "Unholy Power", 5, "Demonology" },
+        { "Demonic Energies", 2, "Demonology" },
+        { "Fel Vitality", 3, "Demonology" },
+        { "Demonic Embrace", 2, "Demonology" },
+        { "Master Summoner", 2, "Demonology" },
+        { "Fel Domination", 1, "Demonology" },
+        { "Demonic Knowledge", 3, "Demonology" },
+        { "Demonic Brand", 3, "Demonology" },
+        { "Demonic Aegis", 2, "Demonology" },
+        { "Demonic Sacrifice", 1, "Demonology" },
+        { "Master Demonologist", 5, "Demonology" },
+        { "Soul Link", 1, "Demonology" },
+        { "Demonic Pact", 1, "Demonology" },
+        { "Improved Corruption", 5, "Affliction" },
+        { "Suppression", 5, "Affliction" },
+        { "Pandemic", 3, "Affliction" },
+        { "Improved Bane of Agony", 2, "Affliction" },
+        { "Malevolence", 5, "Affliction" }
+    },
+    ["Destruction"] = {
+        { "Suppression", 4, "Affliction" },
+        { "Bane", 5, "Destruction" },
+        { "Ruin", 5, "Destruction" },
+        { "Aftermath", 2, "Destruction" },
+        { "Shadow and Flame", 5, "Destruction" },
+        { "Conflagrate", 1, "Destruction" },
+        { "Agonizing Flames", 3, "Destruction" },
+        { "Fire and Brimstone", 3, "Destruction" },
+        { "Cataclysm", 3, "Destruction" },
+        { "Bane of Havoc", 1, "Destruction" },
+        { "Incinerate", 1, "Destruction" },
+        { "Improved Life Tap", 2, "Affliction" },
+        { "Improved Corruption", 5, "Affliction" },
+        { "Unholy Power", 5, "Demonology" },
+        { "Demonic Energies", 2, "Demonology" },
+        { "Aftermath", 5, "Destruction" },
+        { "Suppression", 5, "Affliction" }
+    }
+}
+
 -- Profession roadmaps, keyed by skill line ID. steps = { from, to, what to do }.
 WockyProfGuides = {
     [197] = { name = "Tailoring", icon = "Interface\\Icons\\Trade_Tailoring", primary = true, steps = {

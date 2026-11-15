@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "3.2.0"
+local VERSION = "3.3.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -421,7 +421,8 @@ local TREE_NAMES = { "Affliction", "Demonology", "Destruction" }
 local nodeNameCache = {}
 
 local function NormName(s)
-    return (string.gsub(string.lower(s or ""), "[^%w]", ""))
+    -- keeps non-English letters (UTF-8 bytes) so names in other client languages stay unique
+    return (string.gsub(string.lower(s or ""), "[^%w\128-\255]", ""))
 end
 
 local function SpellNameIcon(spellID)
@@ -567,7 +568,12 @@ end
 -- Walks the build priority list against the real tree.
 -- fromZero = plan for a fresh character, otherwise start from the points you have now.
 local function PlanTalents(spec, nodes, count, fromZero)
-    local build = WockyBuilds and WockyBuilds[spec]
+    local build
+    if WockyAPI and WockyAPI.GetBuild then
+        local ok, b = pcall(WockyAPI.GetBuild, spec, nodes)
+        if ok and type(b) == "table" then build = b end
+    end
+    build = build or (WockyBuilds and WockyBuilds[spec])
     local picks, missing = {}, {}
     if not build then return picks, missing end
     local byKey = {}
@@ -612,7 +618,12 @@ end
 
 -- Old fixed-order fallback, used only if the talent API is not available
 local function GetTalentLine(spec, level)
-    local build = WockyBuilds and WockyBuilds[spec]
+    local build
+    if WockyAPI and WockyAPI.GetBuild then
+        local ok, b = pcall(WockyAPI.GetBuild, spec, nil)
+        if ok and type(b) == "table" then build = b end
+    end
+    build = build or (WockyBuilds and WockyBuilds[spec])
     if not build then return L("NO_BUILD", spec) end
     if level < 10 then return L("TALENT_NONE_YET") end
     local idx, n, have = level - 9, 0, {}
@@ -1838,6 +1849,10 @@ UpdateWockyGuide = function(level)
     if unspent and unspent > 0 then
         tHeader = tHeader .. " |cFF00FF00- " .. L("TALENT_UNSPENT", unspent) .. "|r"
     end
+    if WockyAPI and WockyAPI.BuildSuffix then
+        local ok, suffix = pcall(WockyAPI.BuildSuffix, spec)
+        if ok and type(suffix) == "string" then tHeader = tHeader .. suffix end
+    end
     talentHeader:SetText("|cFFFF7D0A[" .. tHeader .. "]|r")
     if WockyAPI and WockyAPI.OnGuide then pcall(WockyAPI.OnGuide, level, data) end
     UpdateExtras(false)
@@ -2661,5 +2676,7 @@ WockyAPI = {
     shardText = shardText, moneyBtn = moneyBtn,
     GetViewLevel = function() return viewLevel end,
     GetSpecText = GetSpecText, GetTreePoints = GetTreePoints, DetectProfessions = DetectProfessions,
-    ActiveLang = ActiveLang, ROUTE_NAMES = ROUTE_NAMES
+    ActiveLang = ActiveLang, ROUTE_NAMES = ROUTE_NAMES,
+    TREE_NAMES = TREE_NAMES, NormName = NormName, CollectNodes = CollectNodes, AssignTrees = AssignTrees,
+    PlanTalents = PlanTalents, GetBuildSpec = GetBuildSpec
 }

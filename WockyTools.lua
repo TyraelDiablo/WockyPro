@@ -235,6 +235,10 @@ local function BuildReport()
     add("Route: " .. tostring(key) .. " (" .. tostring(pick) .. "), viewing Lvl " .. tostring(W.GetViewLevel and Safe(W.GetViewLevel)))
     add("Talents: " .. StripCodes((W.GetSpecText and Safe(W.GetSpecText)) or "?")
         .. ((WockyDB and WockyDB.spec) and (" (set by hand: " .. tostring(WockyDB.spec) .. ")") or ""))
+    if W.BuildInfo then
+        local ok, info = pcall(W.BuildInfo)
+        if ok and info then add("Build: " .. StripCodes(info)) end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

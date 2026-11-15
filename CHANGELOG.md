@@ -1,5 +1,13 @@
 # WockyPro Changelog
 
+## 3.3.0
+- **Talent map:** click the small book next to the talent header (or type `/wocky talentmap`) to see the planned talent points as a map of the three trees. Use `<` and `>` to see the plan for any level. Gold = planned, green = you already have it, gray = not in the plan.
+- **Second build for every spec:** a group / dungeon build for Affliction, Demonology and Destruction. Turn it on in the settings (Map & Talents tab) or with `/wocky build group` (`/wocky build solo` switches back). The group order is a first version and will be checked in game.
+- **Build sharing:** `/wocky build` opens a window with your talents as a short text (`WP1:...`) to copy and share. Paste a friend's text and click Import, and the guide follows that build. "Remove import" goes back to the guide's own build. The game's own loadout text is shown too when the client offers it.
+- The talent header shows which build the guide follows (Group or Imported)
+- `/wocky report` lists the active build and your build text
+- Talent names in other client languages are matched correctly for imported builds
+
 ## 3.2.0
 - **`/wocky here`:** prints your zone, subzone, map ID and coordinates, plus a line in the guide's own format. Compares your spot with the guide target of the level you are looking at.
 - `/wocky here <note>` saves the spot with a short note (up to 20 spots per account), `/wocky here clear` removes them
