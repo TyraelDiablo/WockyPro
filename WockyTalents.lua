@@ -283,7 +283,11 @@ local function RefreshMap()
     local spec = Spec()
     local level = mapLevel or W.GetViewLevel() or 60
     local ranks = PlanAt(spec, nodes, level)
-    map.title:SetText("|cFF8787EDWockyPro|r - " .. L("TMAP_TITLE", level, spec .. " / " .. KindName()))
+    -- an imported build may be for another spec than yours; name the one the map shows
+    local kind = BuildKind()
+    local shownSpec = spec
+    if kind == "custom" then shownSpec = tostring(Imported().spec or spec) end
+    map.title:SetText("|cFF8787EDWockyPro|r - " .. L("TMAP_TITLE", level, shownSpec .. " / " .. KindName(kind)))
 
     -- column index per tree from the X positions
     local xsByTree = { {}, {}, {} }
@@ -543,7 +547,7 @@ SlashCmdList["WOCKY"] = function(msg)
     local m = string.lower(raw)
     if m == "talentmap" or m == "tmap" or m == "map talents" then
         ShowMap()
-    elseif m == "build" or m == "share" or m == "build export" then
+    elseif m == "build" or m == "share" or m == "build export" or m == "build import" then
         ShowShare()
     elseif string.sub(m, 1, 13) == "build import " then
         local ok, text = ImportText(strtrim(string.sub(raw, 14)))

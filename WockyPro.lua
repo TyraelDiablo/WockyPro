@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "3.3.0"
+local VERSION = "4.0.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -1891,7 +1891,7 @@ end)
 ---------------------------------------------------------------------------
 local ApplyAll
 local Settings = CreateFrame("Frame", "WockySettingsFrame", UIParent, "BackdropTemplate")
-Settings:SetSize(536, 440)
+Settings:SetSize(536, 466)
 Settings:SetPoint("CENTER", UIParent, "CENTER", -260, 0)
 Settings:SetFrameStrata("DIALOG")
 Settings:SetMovable(true)
@@ -1930,7 +1930,7 @@ end
 local function NewPage()
     local page = CreateFrame("Frame", nil, Settings)
     page:SetPoint("TOPLEFT", Settings, "TOPLEFT", 14, -72)
-    page:SetSize(506, 320)
+    page:SetSize(506, 346)
     page.y = 0
     page:Hide()
     settingsPages[#settingsPages + 1] = page
@@ -2479,7 +2479,7 @@ SlashCmdList["WOCKY"] = function(msg)
         end
         return
     end
-    local routeArg = string.match(msg, "^route%s+(%a+)$")
+    local routeArg = string.match(msg, "^route%s*(%a*)$")
     if routeArg then
         local map = { auto = "auto", undead = "SCOURGE", orc = "ORC", troll = "ORC", human = "HUMAN", gnome = "GNOME" }
         if map[routeArg] then
@@ -2509,7 +2509,7 @@ SlashCmdList["WOCKY"] = function(msg)
         print("points: " .. pts[1] .. "/" .. pts[2] .. "/" .. pts[3] .. " total " .. total)
         return
     end
-    local arg = string.match(msg, "^spec%s+(%a+)$")
+    local arg = string.match(msg, "^spec%s*(%a*)$")
     if arg then
         local map = { aff = "Affliction", affliction = "Affliction", demo = "Demonology", demonology = "Demonology", destro = "Destruction", destruction = "Destruction" }
         WockyDB = WockyDB or {}
@@ -2522,6 +2522,12 @@ SlashCmdList["WOCKY"] = function(msg)
         end
         UpdateWockyGuide(viewLevel)
         RefreshSettings()
+        return
+    end
+    if msg == "show" then WockyUI:Show() return end
+    if msg == "hide" then WockyUI:Hide() return end
+    if msg ~= "" and msg ~= "toggle" then
+        print("|cFF8787ED[Wocky]|r " .. L("UNKNOWN_CMD", msg))
         return
     end
     if WockyUI:IsShown() then WockyUI:Hide() else WockyUI:Show() end

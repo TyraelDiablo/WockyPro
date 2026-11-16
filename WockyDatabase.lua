@@ -21,7 +21,7 @@ WockyGuideDB["UNDEAD"] = {
     ["L18"] = { quest = "[ ] Finish Barrens quests.\n[ ] Consider Ashenvale for more quests.", prof = "- Tailoring or First Aid with your cloth.", npc = "Crossroads", x = 52, y = 30, zone = "The Barrens" },
     ["L19"] = { quest = "[ ] Finish pending quests.\n[ ] Collect Soul Shards for Succubus.", prof = "- Gather herbs for Alchemy.", npc = "Crossroads", x = 52, y = 30, zone = "The Barrens" },
     ["L20"] = { quest = "[ ] Go to Undercity Magic Quarter.\n[ ] Talk to Carendin Halgar for Succubus quest.", prof = "- Alchemy: Push your skills to 100 in UC.", npc = "Carendin Halgar", x = 85, y = 25, zone = "Undercity" },
-    ["L21"] = { quest = "[ ] Travel to Tarren Mill (Hillsbrad).\n[ ] Look for local Deathguard scouts.", prof = "- Herbalism: Gather Mageroyal around the rivers.", npc = "Deathguard", x = 62, y = 20, zone = "Hillsbrad" },
+    ["L21"] = { quest = "[ ] Travel to Tarren Mill (Hillsbrad).\n[ ] Look for local Deathguard scouts.", prof = "- Herbalism: Gather Mageroyal around the rivers.", npc = "Deathguard", x = 62, y = 20, zone = "Hillsbrad Foothills" },
     ["L22"] = { quest = "[ ] Talk to Apothecary Lydon at Tarren Mill.\n[ ] Accept Elixir of Pain questline.", prof = "- Kill bears & spiders for tier 2 potion mats.", npc = "Apothecary Lydon", x = 61, y = 19, zone = "Hillsbrad Foothills" },
     ["L23"] = { quest = "[ ] Talk to High Executor Derrington at Tarren Mill.\n[ ] Accept Battle of Hillsbrad (Kill Humans).", prof = "- First Aid: Push Silk Bandages to 150.\n- Farm human fields for silk cloths.", npc = "High Executor Derrington", x = 60, y = 18, zone = "Hillsbrad Foothills" },
     ["L24"] = { quest = "[ ] Farm human fields in Hillsbrad continuously.\n[ ] Complete Derrington next stage quests.", prof = "- First Aid: Keep heavy silk cloth for bandages.", npc = "High Executor Derrington", x = 60, y = 18, zone = "Hillsbrad Foothills" },
@@ -33,13 +33,13 @@ WockyGuideDB["UNDEAD"] = {
     ["L30"] = { quest = "[ ] Return to Undercity Magic Quarter trainer.\n[ ] Accept the grand FELHUNTER pet questline!", prof = "- Demonology: Unlock key level 30 warlock talents.", npc = "Carendin Halgar", x = 85, y = 25, zone = "Undercity" },
     ["L31"] = { quest = "[ ] Move to Desolace (Ghost Walker Post).\n[ ] Grab local centaur faction quests.", prof = "- Tailoring: Gather Silk Cloth from Burning Blade orcs.", npc = "Maurg", x = 55, y = 56, zone = "Desolace" },
     ["L32"] = { quest = "[ ] Clear Gelkis and Magram centaur outposts.\n[ ] Use Voidwalker to multi-dot targets safely.", prof = "- First Aid: Upgrade skills to Heavy Silk Bandages.", npc = "Maurg", x = 55, y = 56, zone = "Desolace" },
-    ["L33"] = { quest = "[ ] Travel to Arathi Highlands (Hammerfall).\n[ ] Accept Hammerfall defense and hunting quests.", prof = "- Mining: Farm Iron Ore nodes near the mountains.", npc = "Zugug", x = 73, y = 34, zone = "Arathi" },
-    ["L34"] = { quest = "[ ] Hunt highland raptors and spiders near mountains.\n[ ] Collect raptor eyes for regional trade quests.", prof = "- First Aid: Push skills toward Mageweave unlocking.", npc = "Zugug", x = 73, y = 34, zone = "Arathi" },
+    ["L33"] = { quest = "[ ] Travel to Arathi Highlands (Hammerfall).\n[ ] Accept Hammerfall defense and hunting quests.", prof = "- Mining: Farm Iron Ore nodes near the mountains.", npc = "Zugug", x = 73, y = 34, zone = "Arathi Highlands" },
+    ["L34"] = { quest = "[ ] Hunt highland raptors and spiders near mountains.\n[ ] Collect raptor eyes for regional trade quests.", prof = "- First Aid: Push skills toward Mageweave unlocking.", npc = "Zugug", x = 73, y = 34, zone = "Arathi Highlands" },
     ["L35"] = { quest = "[ ] Travel to Stranglethorn Vale (Grom gol Base).\n[ ] Grab Nesingwary expedition hunting quests.", prof = "- Herbalism: Gather Wild Steelbloom and Fadeleaf.", npc = "Nesingwary", x = 35, y = 10, zone = "Stranglethorn Vale" },
     ["L36"] = { quest = "[ ] Hunt STV Panthers and Tigers in the jungle.\n[ ] Avoid high level players near roads.", prof = "- Tailoring: Craft Silk Bags to maximize slots.", npc = "Nesingwary", x = 35, y = 10, zone = "Stranglethorn Vale" },
     ["L37"] = { quest = "[ ] Move back to Desolace for Maraudon prep.\n[ ] Complete satyr and undead valley hunts.", prof = "- Alchemy: Start mixing Greater Healing Potions.", npc = "Maurg", x = 55, y = 56, zone = "Desolace" },
     ["L38"] = { quest = "[ ] Move to Shimmering Flats for final cleanup.\n[ ] Grind scorpids and vultures for high XP.", prof = "- Gold Grinding: Farm heavy leather and solid meats.", npc = "Fizzle Brassbolts", x = 78, y = 77, zone = "Thousand Needles" },
-    ["L39"] = { quest = "[ ] Complete remaining elite steps in Arathi.\n[ ] Prepare inventory space for level 40 training.", prof = "- First Aid: Push Mageweave Bandages to 225 max.", npc = "Zugug", x = 73, y = 34, zone = "Arathi" },
+    ["L39"] = { quest = "[ ] Complete remaining elite steps in Arathi.\n[ ] Prepare inventory space for level 40 training.", prof = "- First Aid: Push Mageweave Bandages to 225 max.", npc = "Zugug", x = 73, y = 34, zone = "Arathi Highlands" },
     ["L40"] = { quest = "[ ] Return to Undercity Magic Quarter Warlock Hub.\n[ ] Train your Felsteed Mount from trainer!", prof = "- Trainer: Learn new rank of Shadow Bolt.\n- Max out current trade caps.", npc = "Carendin Halgar", x = 85, y = 25, zone = "Undercity" },
     ["L41"] = { quest = "[ ] Travel to Badlands (Kargath hub).\n[ ] Accept local desert quests and check Uldaman dungeon.", prof = "- Mining: Gather Mithril Ore deposits around mountains.", npc = "Garek", x = 4, y = 44, zone = "Badlands" },
     ["L42"] = { quest = "[ ] Move to Feralas (Camp Mojache).\n[ ] Accept hunter ruins quests and kill local ogres.", prof = "- Herbalism: Gather Goldthorn and Fadeleaf in jungles.", npc = "Hadaro", x = 74, y = 43, zone = "Feralas" },
@@ -639,3 +639,17 @@ WockyDungeons = {
     { "Stratholme", 58, 60, "Eastern Plaguelands" },
     { "Upper Blackrock Spire", 58, 60, "Blackrock Mountain" }
 }
+
+---------------------------------------------------------------------------
+-- Quest steps (4.0.0). Steps tied to real quest IDs, per route and level:
+-- WockyQuestSteps[routeKey]["L<level>"] = { step, step, ... }
+--   { "accept", questID, npc = "...", zone = "...", x = 0, y = 0 }   -- ticks when the quest is in your log
+--   { "complete", questID, zone = "...", x = 0, y = 0 }            -- ticks when the objectives are done
+--   { "turnin", questID, npc = "...", zone = "...", x = 0, y = 0 }   -- ticks when the quest is turned in
+--   { "goto" | "learn" | "fly", name = "...", zone = "...", x = 0, y = 0 } -- ticked by hand
+-- zone / x / y are optional; the arrow points to the first open step that has them.
+-- Route keys: SCOURGE (Undead), ORC (Orc and Troll), HUMAN, GNOME.
+-- TODO: no Forever quest IDs are checked yet. Fill this from the quest recorder
+-- (/wocky quests shows the draft steps in this format) after testing in game.
+---------------------------------------------------------------------------
+WockyQuestSteps = {}

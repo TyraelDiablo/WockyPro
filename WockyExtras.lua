@@ -887,6 +887,13 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "4.0.0", {
+        "Quest recorder: while you play, WockyPro saves each quest's ID, name, giver and turn-in NPC with their position. /wocky quests shows it as text to copy",
+        "Quest steps: route levels can now list real quests (accept, complete, turn in) that tick themselves from your quest log, with live objectives like 8/10. The quest data is collected with the recorder first",
+        "The arrow points to the next open quest step when a level has steps",
+        "Route fix: Hillsbrad and Arathi steps use the full zone names, so the arrow and /wocky here show the right zone",
+        "A mistyped /wocky command no longer hides the guide; /wocky show, /wocky hide, and /wocky route or /wocky spec alone list their options"
+    } },
     { "3.3.0", {
         "Talent map: click the small book next to the talent header (or /wocky talentmap) to see the planned points for any level",
         "Second build for every spec: turn on the group / dungeon build in the settings (Map & Talents tab)",

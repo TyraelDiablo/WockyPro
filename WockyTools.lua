@@ -239,6 +239,10 @@ local function BuildReport()
         local ok, info = pcall(W.BuildInfo)
         if ok and info then add("Build: " .. StripCodes(info)) end
     end
+    if W.QuestRecInfo then
+        local ok, info = pcall(W.QuestRecInfo)
+        if ok and info then add("Quest recorder: " .. tostring(info)) end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

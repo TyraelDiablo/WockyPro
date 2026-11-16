@@ -1,5 +1,17 @@
 # WockyPro Changelog
 
+## 4.0.0
+- **Quest recorder (first step of the quest engine):** while you play, WockyPro saves the ID, name and level of every quest you accept or turn in, plus the giver and turn-in NPC (name, NPC ID, zone and coordinates). Type `/wocky quests` to see everything as text you can copy, including draft route steps in the order you played them. `/wocky quests off` / `on` turns it off or on (also in the settings, Map & Talents tab), `/wocky quests clear` removes the list. This is how the real Forever quest data will be collected.
+- **Quest steps:** a route level can now list steps tied to real quest IDs: accept, complete, turn in, plus go to / learn / fly. Quest steps tick themselves from your quest log, show live objectives (for example "8/10 Hillsbrad Farmer") and say when a quest is ready to turn in. Go / learn / fly steps are ticked with a click. The quest data itself comes later, after it is collected with the recorder.
+- The arrow points to the next open quest step when the level has steps
+- `/wocky report` shows the quest recorder status
+- The settings window is a little taller so every option fits
+- **Route fix:** the Hillsbrad and Arathi steps of the Undead, Orc and Troll routes use the full zone names (Hillsbrad Foothills, Arathi Highlands). The arrow, the step tooltip and `/wocky here` now show the right zone name.
+- A mistyped `/wocky` command now says "Unknown command" and points to `/wocky help` instead of hiding the guide. `/wocky show` and `/wocky hide` work too.
+- `/wocky route` and `/wocky spec` without a choice list their options
+- `/wocky build import` without text opens the build window
+- The talent map title shows the spec of an imported build (it showed your own spec before)
+
 ## 3.3.0
 - **Talent map:** click the small book next to the talent header (or type `/wocky talentmap`) to see the planned talent points as a map of the three trees. Use `<` and `>` to see the plan for any level. Gold = planned, green = you already have it, gray = not in the plan.
 - **Second build for every spec:** a group / dungeon build for Affliction, Demonology and Destruction. Turn it on in the settings (Map & Talents tab) or with `/wocky build group` (`/wocky build solo` switches back). The group order is a first version and will be checked in game.
