@@ -18,3 +18,17 @@ WockyExtras.lua
 WockyTools.lua
 WockyTalents.lua
 WockyQuests.lua
+WockyGuide_enUS.lua
+WockyGuide_trTR.lua
+WockyGuide_deDE.lua
+WockyGuide_esES.lua
+WockyGuide_esMX.lua
+WockyGuide_frFR.lua
+WockyGuide_itIT.lua
+WockyGuide_ptBR.lua
+WockyGuide_ruRU.lua
+WockyGuide_koKR.lua
+WockyGuide_zhCN.lua
+WockyGuide_zhTW.lua
+WockyGuideText.lua
+WockySetup.lua

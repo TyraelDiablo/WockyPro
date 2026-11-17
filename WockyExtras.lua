@@ -338,8 +338,11 @@ dungeonBtn:SetScript("OnEnter", function(self)
     GameTooltip:Show()
 end)
 dungeonBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+-- dungeon places that are not a map zone of their own
+local DUNGEON_MAP_ZONE = { ["Blackrock Mountain"] = "Burning Steppes" }
+
 dungeonBtn:SetScript("OnClick", function()
-    if dungeonZone and W.OpenMapZone then W.OpenMapZone(dungeonZone) end
+    if dungeonZone and W.OpenMapZone then W.OpenMapZone(DUNGEON_MAP_ZONE[dungeonZone] or dungeonZone) end
 end)
 
 function W.ExtraLayout(y)
@@ -804,7 +807,13 @@ local function AutoCheck(pattern, extra, skip)
         end
     end
     if #changed > 0 then
-        for _, text in ipairs(changed) do Chat(L("AUTO_CHECKED", text)) end
+        for _, text in ipairs(changed) do
+            if W.TranslateLine then
+                local ok, t = pcall(W.TranslateLine, text)
+                if ok and type(t) == "string" then text = t end
+            end
+            Chat(L("AUTO_CHECKED", text))
+        end
         W.UpdateWockyGuide(W.GetViewLevel())
     end
 end
@@ -887,6 +896,12 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "4.1.0", {
+        "Setup wizard on first start: language, route, spec, what the window shows and the automatic helpers. /wocky setup opens it again",
+        "Guide texts in all 12 languages of the addon (NPC and place names stay English so the map links work). Turn it off in the settings to read the English text",
+        "Update notice: after an update a small window next to the guide shows what is new, in your language. It also tells you when a group or guild member has a newer WockyPro",
+        "/wocky here only saves a spot when you add a note, build import explains a build with too many points, Blackrock dungeons open the Burning Steppes map"
+    } },
     { "4.0.0", {
         "Quest recorder: while you play, WockyPro saves each quest's ID, name, giver and turn-in NPC with their position. /wocky quests shows it as text to copy",
         "Quest steps: route levels can now list real quests (accept, complete, turn in) that tick themselves from your quest log, with live objectives like 8/10. The quest data is collected with the recorder first",
@@ -929,6 +944,8 @@ local NEWS = {
         "/wocky help and /wocky news"
     } }
 }
+
+W.NEWS = NEWS
 
 local function PrintHelp()
     Chat(L("HELP_HEADER"))
@@ -987,7 +1004,8 @@ ev:SetScript("OnEvent", function(self, event, arg1, arg2)
             arrow:SetPoint(pos[1], UIParent, pos[2] or pos[1], pos[3] or 0, pos[4] or 0)
         end
         arrow:SetScale(Cfg("arrowScale") or 1)
-        if WockyDB.lastVersion and WockyDB.lastVersion ~= W.VERSION then
+        -- the update window (WockySetup.lua) replaces this chat line when it is loaded
+        if WockyDB.lastVersion and WockyDB.lastVersion ~= W.VERSION and not W.ShowUpdateNotice then
             C_Timer.After(4, function() Chat(L("UPDATED", W.VERSION)) end)
         end
         WockyDB.lastVersion = W.VERSION

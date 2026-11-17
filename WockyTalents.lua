@@ -11,6 +11,7 @@ local TREES = W.TREE_NAMES or { "Affliction", "Demonology", "Destruction" }
 local SPEC_CODE = { Affliction = "A", Demonology = "D", Destruction = "X" }
 local CODE_SPEC = { A = "Affliction", D = "Demonology", X = "Destruction" }
 local MAX_STEPS = 80
+local MAX_POINTS = 51 -- talent points at level 60
 local CELL = 30
 
 for k, v in pairs({ groupBuild = false, customBuild = true }) do
@@ -60,6 +61,15 @@ local function KindName(kind)
     return L(KIND_KEYS[kind or BuildKind()] or "BUILD_KIND_SOLO")
 end
 
+-- for the talent header and chat: an imported build names its spec ("Imported (Destruction)")
+local function KindLabel(kind)
+    kind = kind or BuildKind()
+    local name = KindName(kind)
+    local c = kind == "custom" and Imported()
+    if c and c.spec then name = name .. " (" .. tostring(c.spec) .. ")" end
+    return name
+end
+
 -- Called by PlanTalents in WockyPro.lua. Returns a build list or nil (= solo build).
 function W.GetBuild(spec, nodes)
     local kind = BuildKind()
@@ -83,7 +93,9 @@ end
 function W.BuildSuffix()
     local kind = BuildKind()
     if kind == "solo" then return nil end
-    return " - " .. KindName(kind)
+    -- without talent data from the client the imported build cannot be used (the guide falls back to its own build)
+    if kind == "custom" and #Nodes() == 0 then return nil end
+    return " - " .. KindLabel(kind)
 end
 
 ---------------------------------------------------------------------------
@@ -138,7 +150,7 @@ end
 -- returns spec, steps or nil
 local function Decode(text)
     if type(text) ~= "string" then return nil end
-    local code, body = string.match(text, "WP1:(%a):([%d%.%-]+)")
+    local code, body = string.match(text, "[Ww][Pp]1:(%a):([%d%.%-]+)")
     local spec = code and CODE_SPEC[string.upper(code)]
     if not spec then return nil end
     local steps = {}
@@ -148,7 +160,8 @@ local function Decode(text)
         steps[#steps + 1] = { id, rank }
         if #steps > MAX_STEPS then return nil end
     end
-    if #steps == 0 or TotalPoints(steps) > 61 then return nil end
+    if #steps == 0 then return nil end
+    if TotalPoints(steps) > MAX_POINTS then return nil, "SHARE_TOO_MANY" end
     return spec, steps
 end
 
@@ -165,7 +178,10 @@ end
 
 local function ImportText(text)
     local spec, steps = Decode(text)
-    if not spec then return false, L("SHARE_BAD") end
+    if not spec then
+        if steps == "SHARE_TOO_MANY" then return false, L("SHARE_TOO_MANY", MAX_POINTS) end
+        return false, L("SHARE_BAD")
+    end
     local nodes = Nodes()
     local missing = 0
     if #nodes > 0 then
@@ -559,7 +575,9 @@ SlashCmdList["WOCKY"] = function(msg)
         Refresh()
     elseif m == "build group" or m == "build solo" then
         W.SetCfg("groupBuild", m == "build group")
-        Chat(L("TALENT_BUILD") .. ": " .. KindName())
+        Chat(L("TALENT_BUILD") .. ": " .. KindLabel())
+        -- an imported build wins over the solo / group choice; say how to remove it
+        if BuildKind() == "custom" then Chat(L("BUILD_IMPORT_ACTIVE")) end
         Refresh()
     elseif baseSlash then
         baseSlash(msg)

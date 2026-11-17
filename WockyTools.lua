@@ -175,6 +175,11 @@ local function DoHere(note)
             print("  " .. L("HERE_OTHER_ZONE"))
         end
     end
+    -- only "/wocky here <note>" saves the spot; plain "/wocky here" just prints it
+    if not note then
+        print("  |cFF999999" .. L("HERE_SAVE_HINT") .. "|r")
+        return
+    end
     local list = Spots()
     table.insert(list, 1, s)
     while #list > MAX_SPOTS do table.remove(list) end

@@ -1,5 +1,15 @@
 # WockyPro Changelog
 
+## 4.1.0
+- **Setup wizard:** on the first start a small wizard asks for your language, route, talent spec, what the window shows and which automatic helpers you want. `/wocky setup` (or the button in the settings, Display tab) opens it again.
+- **Guide in every language:** the route texts are now translated into all 12 languages of the addon (English, Turkish, German, Spanish for Spain and Mexico, French, Italian, Portuguese, Russian, Korean, Simplified and Traditional Chinese). NPC and place names stay in English so the map links keep working. A line without a translation shows in English. You can turn it off in the settings (General tab) to read the English text. Translators: see `WockyGuide_enUS.lua`.
+- **Update notice:** after WockyPro is updated, a small window opens next to the guide on your first login and lists what is new, in your language. The close button only closes the notice; the guide keeps working. Addons cannot go online, so WockyPro learns about a newer version from group and guild members who use it, and shows "New version" in the same window. Turn it off in the settings (Display tab); `/wocky update` shows it again.
+- `/wocky here` without a note only prints your spot; add a note (`/wocky here <note>`) to save it
+- Build import: a build with more than 51 talent points now says so, `wp1:` in small letters works too, and the talent header shows the spec of an imported build
+- `/wocky build group` / `solo` tells you when an imported build is active and how to remove it
+- Clicking the dungeon line for Blackrock Depths and Blackrock Spire opens the Burning Steppes map
+- Undead level 21 points to Tarren Mill; the settings window is a little taller so the new options fit
+
 ## 4.0.0
 - **Quest recorder (first step of the quest engine):** while you play, WockyPro saves the ID, name and level of every quest you accept or turn in, plus the giver and turn-in NPC (name, NPC ID, zone and coordinates). Type `/wocky quests` to see everything as text you can copy, including draft route steps in the order you played them. `/wocky quests off` / `on` turns it off or on (also in the settings, Map & Talents tab), `/wocky quests clear` removes the list. This is how the real Forever quest data will be collected.
 - **Quest steps:** a route level can now list steps tied to real quest IDs: accept, complete, turn in, plus go to / learn / fly. Quest steps tick themselves from your quest log, show live objectives (for example "8/10 Hillsbrad Farmer") and say when a quest is ready to turn in. Go / learn / fly steps are ticked with a click. The quest data itself comes later, after it is collected with the recorder.

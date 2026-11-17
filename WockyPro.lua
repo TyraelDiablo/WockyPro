@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "4.0.0"
+local VERSION = "4.1.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -910,7 +910,13 @@ local function RenderLines(buttons, keyPrefix, level, text, stripPattern)
         if i > #buttons then break end
         local b = buttons[i]
         local key = keyPrefix .. level .. ":" .. i
-        local tokenText = Tokenize((string.gsub(line, stripPattern, "")))
+        -- guide text in the player's language (WockyGuideText.lua); falls back to English
+        local shown = line
+        if WockyAPI and WockyAPI.TranslateLine then
+            local ok, t = pcall(WockyAPI.TranslateLine, line)
+            if ok and type(t) == "string" then shown = t end
+        end
+        local tokenText = Tokenize((string.gsub(shown, stripPattern, "")))
         b.tokenText = tokenText
         local function Draw()
             local done = doneT[key]
@@ -1891,7 +1897,7 @@ end)
 ---------------------------------------------------------------------------
 local ApplyAll
 local Settings = CreateFrame("Frame", "WockySettingsFrame", UIParent, "BackdropTemplate")
-Settings:SetSize(536, 466)
+Settings:SetSize(536, 496)
 Settings:SetPoint("CENTER", UIParent, "CENTER", -260, 0)
 Settings:SetFrameStrata("DIALOG")
 Settings:SetMovable(true)
@@ -1930,7 +1936,7 @@ end
 local function NewPage()
     local page = CreateFrame("Frame", nil, Settings)
     page:SetPoint("TOPLEFT", Settings, "TOPLEFT", 14, -72)
-    page:SetSize(506, 346)
+    page:SetSize(506, 376)
     page.y = 0
     page:Hide()
     settingsPages[#settingsPages + 1] = page
@@ -2676,7 +2682,8 @@ WockyAPI = {
     ShortTime = ShortTime, LongTime = LongTime, CoinText = CoinText, BagCounts = BagCounts,
     CharKey = CharKey, RouteKey = RouteKey, DoneTable = DoneTable,
     UpdateWockyGuide = UpdateWockyGuide, ApplyAll = ApplyAll, ToggleSettings = ToggleSettings,
-    AddToggle = AddToggle, AddStepper = AddStepper, RefreshSettings = RefreshSettings,
+    AddToggle = AddToggle, AddStepper = AddStepper, AddButton = AddButton, AddCycle = AddCycle, RefreshSettings = RefreshSettings,
+    LANG_CODES = LANG_CODES, LANG_NAMES = LANG_NAMES,
     pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap,
     questHeader = questHeader, profHeader = profHeader, talentHeader = talentHeader,
     shardText = shardText, moneyBtn = moneyBtn,
