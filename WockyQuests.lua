@@ -628,6 +628,9 @@ SlashCmdList["WOCKY"] = function(msg)
     end
 end
 
+-- used by the route plan (WockyRoute.lua)
+W.QuestStepsFor = StepsFor
+
 -- for tests
 W._QuestRecorderText = RecorderText
 W._QuestStepsFor = StepsFor

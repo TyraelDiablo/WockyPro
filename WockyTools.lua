@@ -248,6 +248,10 @@ local function BuildReport()
         local ok, info = pcall(W.QuestRecInfo)
         if ok and info then add("Quest recorder: " .. tostring(info)) end
     end
+    if W.RoutePlanInfo then
+        local ok, info = pcall(W.RoutePlanInfo)
+        if ok and info then add("Route plan: " .. tostring(info)) end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

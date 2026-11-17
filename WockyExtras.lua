@@ -896,6 +896,13 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "4.2.0", {
+        "Route plan: /wocky plan opens a small window for the road ahead",
+        "Hearthstone: where you are bound, where the route wants it for your level, and the next change",
+        "Next levels: the coming hubs and zones; click one to point the arrow there. Shows if you already have the flight path there (WockyPro notes flight paths when you open a flight map)",
+        "Open steps in this zone: unticked guide lines of the zone you are in; click one to tick it",
+        "Reminders when your hearthstone is not where the route wants it (English client) or when an earlier level of this zone is only half done. Turn them off in the settings (Map & Talents tab)"
+    } },
     { "4.1.0", {
         "Setup wizard on first start: language, route, spec, what the window shows and the automatic helpers. /wocky setup opens it again",
         "Guide texts in all 12 languages of the addon (NPC and place names stay English so the map links work). Turn it off in the settings to read the English text",

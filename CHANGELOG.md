@@ -1,5 +1,13 @@
 # WockyPro Changelog
 
+## 4.2.0
+- **Route plan:** `/wocky plan` opens a small window for the road ahead.
+- **Hearthstone:** shows where you are bound, where the route wants your hearthstone for your level, and the next level where it changes. With an English game client it also says when your hearthstone is somewhere else.
+- **Next levels:** the coming hubs and zones of your route. Click a line to point the arrow there. Each line says if you already have the flight path there. WockyPro notes flight paths when you open a flight map or find a new one; nothing is guessed.
+- **Open steps in this zone:** guide lines of the zone you stand in that are not ticked yet. Click one to tick it.
+- New reminders in the guide window: hearthstone not where the route wants it, and steps left open on earlier levels of this zone (levels where you already ticked something). Turn them off in the settings (Map & Talents tab).
+- `/wocky report` shows a short route plan line (hearthstone, open steps here, flight points seen)
+
 ## 4.1.0
 - **Setup wizard:** on the first start a small wizard asks for your language, route, talent spec, what the window shows and which automatic helpers you want. `/wocky setup` (or the button in the settings, Display tab) opens it again.
 - **Guide in every language:** the route texts are now translated into all 12 languages of the addon (English, Turkish, German, Spanish for Spain and Mexico, French, Italian, Portuguese, Russian, Korean, Simplified and Traditional Chinese). NPC and place names stay in English so the map links keep working. A line without a translation shows in English. You can turn it off in the settings (General tab) to read the English text. Translators: see `WockyGuide_enUS.lua`.
