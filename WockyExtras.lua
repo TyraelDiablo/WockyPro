@@ -761,7 +761,7 @@ ClickOverlay(W.profHeader, OpenSpellbook, "CLICK_SPELLBOOK")
 ClickOverlay(W.talentHeader, W.OpenTalents, "CLICK_TALENTS")
 ClickOverlay(W.charInfoText, OpenCharacter, "CLICK_CHAR")
 ClickOverlay(W.charSpecText, W.OpenTalents, "CLICK_TALENTS")
-ClickOverlay(W.shardText, OpenBags, "CLICK_BAGS")
+W.shardOverlay = ClickOverlay(W.shardText, OpenBags, "CLICK_BAGS")
 if W.moneyBtn then
     W.moneyBtn:SetScript("OnClick", OpenBags)
     W.moneyBtn:HookScript("OnEnter", function()
@@ -899,6 +899,13 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "5.0.0", {
+        "Warlock tools: /wocky lock (or right-click the shard count) opens a new window for demons, shards, trainer and money",
+        "Demon advisor: which of your demons fits now - Voidwalker solo, Felhunter against casters, Imp in a group, Succubus for fast kills (choose in the settings)",
+        "Soul Shards: a 'too many' limit with a reminder and one chat message, plus a soul bag reminder when shards fill your normal bags",
+        "Trainer planner: WockyPro saves the spell list from your warlock trainer window and shows what you can learn now, the next level and the cost",
+        "Money goals: savings bars for the level 40 and 60 mounts plus training. Set the mount prices in the new Warlock tab of the settings"
+    } },
     { "4.2.1", {
         "Fix: no more Lua error in combat from the Healthstone, Soulstone and Hearthstone icons (the game hides cooldowns in combat; WockyPro now leaves them alone there)",
         "New Firestone icon next to the Healthstone and Soulstone icons, with count, tooltip and cooldown. It shows once you know Create Firestone or carry a Firestone",

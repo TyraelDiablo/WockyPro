@@ -2,7 +2,7 @@
 
 Warlock leveling guide for **World of Warcraft: Forever**.
 
-Race-based routes for Undead, Orc, Troll, Human and Gnome, adaptive talent advice, live profession recipe colors, Soulstone and Healthstone tracking, an XP bar and 12 languages (the guide texts too).
+Race-based routes for Undead, Orc, Troll, Human and Gnome, adaptive talent advice, live profession recipe colors, Soulstone, Healthstone and Firestone tracking, Warlock tools (demon advisor, shard limit, trainer planner, money goals), an XP bar and 12 languages (the guide texts too).
 
 **Download:** [CurseForge](https://www.curseforge.com/wow/addons/wockypro)
 

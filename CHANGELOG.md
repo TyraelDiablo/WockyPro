@@ -1,5 +1,14 @@
 # WockyPro Changelog
 
+## 5.0.0
+- **Warlock tools:** a new window for your demons, Soul Shards, trainer and money. Open it with `/wocky lock`, by right-clicking the shard count in the guide window, or with the button in the new **Warlock** tab of the settings.
+- **Demon advisor:** shows which of your demons fits right now: Voidwalker when you play alone, Felhunter when your target casts spells, Imp in a group, Succubus for fast kills if you pick "fast" in the settings. When another demon would fit better, a short reminder says so (out of combat only; turn it off in the settings).
+- **Soul Shards:** set a "too many shards" limit (default 20). Above it the guide window shows a reminder and you get one chat message. A soul bag reminder appears when 8 or more shards sit in your normal bags.
+- **Trainer planner:** open your warlock trainer once and WockyPro saves its spell list with levels and costs. The window then shows what you can learn now, the next level with new spells, and what it costs. Nothing is guessed: the data comes from the game's own trainer window.
+- **Money goals:** savings bars for the level 40 and level 60 mounts plus the training costs on the way, also on the money tooltip. Set the mount prices in the settings (Warlock tab); the defaults (100 and 1000 gold) are only placeholders.
+- `/wocky report` lists the Warlock tools status
+- The settings window is a little wider for the new tab
+
 ## 4.2.1
 - **Fix: Lua error in combat.** In combat the game hides item and spell cooldowns from addons ("secret values"). The Healthstone, Soulstone and Hearthstone icons tried to count them every half second, so the error repeated and WoW offered to turn addons off. WockyPro now does no cooldown math in combat: the number keeps ticking from the last known time and the dark swipe still shows. Other addons were not the cause.
 - **Firestone icon:** a new icon next to the Healthstone and Soulstone icons, in the same style, with count, tooltip and cooldown. It shows when you know Create Firestone or carry a Firestone (in the bags or in your off-hand). It uses the same "Healthstone / Soulstone icons" setting.

@@ -34,3 +34,4 @@ WockyGuide_zhTW.lua
 WockyGuideText.lua
 WockySetup.lua
 WockyRoute.lua
+WockyWarlock.lua
