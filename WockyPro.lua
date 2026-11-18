@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "4.2.0"
+local VERSION = "4.2.1"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -332,6 +332,7 @@ local function MakeStoneButton(iconPath)
     glow:SetSize(54, 54)
     glow:SetVertexColor(0.8, 0.4, 1)
     glow:Hide()
+    b.glowTex = glow
     local anim
     pcall(function()
         anim = glow:CreateAnimationGroup()
@@ -991,7 +992,7 @@ local function Layout(questCount, profCount, talentCount)
         xpText:SetPoint("TOPLEFT", WockyUI, "TOPLEFT", 16, -y)
         y = y + TextH(xpText) + 4
     end
-    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown() or (WockyAPI and WockyAPI.hearthBtn and WockyAPI.hearthBtn:IsShown())
+    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown() or (WockyAPI and ((WockyAPI.hearthBtn and WockyAPI.hearthBtn:IsShown()) or (WockyAPI.fsBtn and WockyAPI.fsBtn:IsShown())))
     local moneyVisible = moneyText:IsShown()
     if stonesVisible or moneyVisible then
         local h = stonesVisible and 30 or 16
@@ -1194,43 +1195,62 @@ local SS_USE_SPELLS = { [20707] = true, [20762] = true, [20763] = true, [20764] 
 local SS_CREATE_SPELLS = { 693, 20752, 20755, 20756, 20757 }
 local SS_COOLDOWN = 1800
 
+-- Remaining cooldown in seconds. Returns -1 when the value cannot be used safely:
+-- in combat the Forever client hands out cooldowns as "secret" numbers that addon
+-- code may not compare or do math on, so nothing is calculated then.
+local function CDRemaining(s, d)
+    if (InCombatLockdown and InCombatLockdown()) or (UnitAffectingCombat and UnitAffectingCombat("player")) then
+        return -1
+    end
+    local ok, r = pcall(function()
+        if issecretvalue and (issecretvalue(s) or issecretvalue(d)) then return -1 end
+        if canaccessvalue and not (canaccessvalue(s) and canaccessvalue(d)) then return -1 end
+        if type(s) ~= "number" or type(d) ~= "number" or s <= 0 or d <= 1.5 then return 0 end
+        local x = s + d - GetTime()
+        if x < 0 then x = 0 end
+        return x
+    end)
+    if ok and type(r) == "number" then return r end
+    return -1
+end
+
+-- These return the raw values from the client; only CDRemaining looks at them.
 local function GetItemCD(id)
-    local s, d = 0, 0
+    local s, d
     pcall(function()
         if C_Container and C_Container.GetItemCooldown then s, d = C_Container.GetItemCooldown(id) end
-        if (not d or d == 0) and GetItemCooldown then s, d = GetItemCooldown(id) end
+        if GetItemCooldown and (d == nil or d == 0) then s, d = GetItemCooldown(id) end
     end)
-    return s or 0, d or 0
+    return s, d
 end
 
 local function GetSpellCD(id)
-    local s, d = 0, 0
+    local s, d
     pcall(function()
         if C_Spell and C_Spell.GetSpellCooldown then
             local info = C_Spell.GetSpellCooldown(id)
             if type(info) == "table" then
-                s, d = info.startTime or 0, info.duration or 0
+                s, d = info.startTime, info.duration
                 return
             end
         end
         if GetSpellCooldown then s, d = GetSpellCooldown(id) end
     end)
-    return s or 0, d or 0
+    return s, d
 end
 
-local function CDRemaining(s, d)
-    if not s or not d or s <= 0 or d <= 1.5 then return 0 end
-    local r = s + d - GetTime()
-    if r < 0 then r = 0 end
-    return r
-end
-
+-- Longest cooldown of a list. r = -1 means hidden (combat); s, d are then the raw
+-- values of the first id, only for the Cooldown frame's swipe.
 local function BestCD(ids, getter)
     local bs, bd, br = 0, 0, 0
     for _, id in ipairs(ids) do
         local s, d = getter(id)
         local r = CDRemaining(s, d)
-        if r > br then bs, bd, br = s, d, r end
+        if r < 0 then
+            if br == 0 then bs, bd, br = s, d, -1 end
+        elseif r > br then
+            bs, bd, br = s, d, r
+        end
     end
     return bs, bd, br
 end
@@ -1254,22 +1274,37 @@ local function LongTime(r)
     return string.format("%d:%02d", math.floor(r / 60), r % 60)
 end
 
+-- Shows a cooldown on a stone icon and returns a safe remaining time (never secret).
+-- r < 0 (combat / secret values): no math on s and d; the last safe end time keeps
+-- the number ticking, and the swipe gets the raw values inside pcall.
 local function SetStoneCD(b, s, d, r)
+    r = tonumber(r) or 0
     if r > 0 then
         if b.cd and b.cdStart ~= s then
             pcall(b.cd.SetCooldown, b.cd, s, d)
             b.cd:Show()
             b.cdStart = s
         end
+        b.cdEnd = GetTime() + r
         b.timer:SetText(ShortTime(r))
-    else
-        if b.cd and b.cdStart then
-            pcall(b.cd.SetCooldown, b.cd, 0, 0)
-            b.cd:Hide()
+        return r
+    elseif r < 0 then
+        local left = b.cdEnd and (b.cdEnd - GetTime()) or 0
+        if left < 0 then left, b.cdEnd = 0, nil end
+        if b.cd and not b.cdEnd then
+            if pcall(b.cd.SetCooldown, b.cd, s, d) then b.cd:Show() end
+            b.cdStart = nil
         end
-        b.cdStart = nil
-        b.timer:SetText("")
+        b.timer:SetText(left > 0 and ShortTime(left) or "")
+        return left
     end
+    if b.cd and (b.cdStart or b.cd:IsShown()) then
+        pcall(b.cd.SetCooldown, b.cd, 0, 0)
+        b.cd:Hide()
+    end
+    b.cdStart, b.cdEnd = nil, nil
+    b.timer:SetText("")
+    return 0
 end
 
 local function ItemIcon(id)
@@ -1289,6 +1324,7 @@ local function UpdateStones()
         local hi, si = ItemIcon(5512), ItemIcon(5232)
         if hi then hsBtn.icon:SetTexture(hi) end
         if si then ssBtn.icon:SetTexture(si) end
+        hsBtn.glowTex:SetVertexColor(0.2, 1, 0.3)
         stoneIconsSet = true
     end
     local counts = BagCounts()
@@ -1301,10 +1337,13 @@ local function UpdateStones()
         hsBtn.count:SetText(n > 1 and tostring(n) or "")
         local s, d, r = BestCD(HEALTHSTONE_IDS, GetItemCD)
         SetStoneCD(hsBtn, s, d, r)
+        -- Pulses green while there is no Healthstone in the bags
+        hsBtn:SetGlow(n == 0)
         hsBtn.tipTitle = "Healthstone"
         hsBtn.tipText = (n > 0) and L("HS_HAVE", n) or L("HS_NONE")
         hsBtn:Show()
     else
+        hsBtn:SetGlow(false)
         hsBtn:Hide()
     end
 
@@ -1312,10 +1351,10 @@ local function UpdateStones()
         local has = HasAny(counts, SOULSTONE_IDS)
         local s, d, r = BestCD(SOULSTONE_IDS, GetItemCD)
         local s2, d2, r2 = BestCD(SS_CREATE_SPELLS, GetSpellCD)
-        if r2 > r then s, d, r = s2, d2, r2 end
+        if r2 > r or (r2 < 0 and r == 0) then s, d, r = s2, d2, r2 end
         local s3, d3, r3 = TrackedSoulstoneCD()
-        if r3 > r then s, d, r = s3, d3, r3 end
-        SetStoneCD(ssBtn, s, d, r)
+        if r3 > 0 and (r < 0 or r3 > r) then s, d, r = s3, d3, r3 end
+        r = SetStoneCD(ssBtn, s, d, r)
         ssBtn.icon:SetDesaturated(not has)
         ssBtn.icon:SetAlpha(has and 1 or 0.6)
         -- Glow when the cooldown is over and there is no soulstone yet; stops once you make one
@@ -2632,7 +2671,8 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         end
         lastTrainerWasProf = false
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        if arg1 == "player" and SS_USE_SPELLS[tonumber(arg3) or 0] and time then
+        local okSS, isSS = pcall(function() return SS_USE_SPELLS[tonumber(arg3) or 0] end)
+        if arg1 == "player" and okSS and isSS and time then
             WockyDB.ssUsed = WockyDB.ssUsed or {}
             WockyDB.ssUsed[CharKey()] = time()
             UpdateStones()
@@ -2679,6 +2719,7 @@ WockyAPI = {
     WockyUI = WockyUI, statusRow = statusRow, bagButton = bagButton, hsBtn = hsBtn, ssBtn = ssBtn,
     charInfoText = charInfoText, charSpecText = charSpecText,
     MakeStoneButton = MakeStoneButton, SetStoneCD = SetStoneCD, GetItemCD = GetItemCD, ItemIcon = ItemIcon,
+    GetSpellCD = GetSpellCD, CDRemaining = CDRemaining, BestCD = BestCD,
     ShortTime = ShortTime, LongTime = LongTime, CoinText = CoinText, BagCounts = BagCounts,
     CharKey = CharKey, RouteKey = RouteKey, DoneTable = DoneTable,
     UpdateWockyGuide = UpdateWockyGuide, ApplyAll = ApplyAll, ToggleSettings = ToggleSettings,

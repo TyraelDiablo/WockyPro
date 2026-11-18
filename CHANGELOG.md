@@ -1,5 +1,11 @@
 # WockyPro Changelog
 
+## 4.2.1
+- **Fix: Lua error in combat.** In combat the game hides item and spell cooldowns from addons ("secret values"). The Healthstone, Soulstone and Hearthstone icons tried to count them every half second, so the error repeated and WoW offered to turn addons off. WockyPro now does no cooldown math in combat: the number keeps ticking from the last known time and the dark swipe still shows. Other addons were not the cause.
+- **Firestone icon:** a new icon next to the Healthstone and Soulstone icons, in the same style, with count, tooltip and cooldown. It shows when you know Create Firestone or carry a Firestone (in the bags or in your off-hand). It uses the same "Healthstone / Soulstone icons" setting.
+- **Pulsing icons:** the Healthstone icon pulses green and the Firestone icon pulses orange-red while you have none, the same way the Soulstone icon already does.
+- Fix: the navigation arrow no longer throws a Lua error on maps where the game gives no map size.
+
 ## 4.2.0
 - **Route plan:** `/wocky plan` opens a small window for the road ahead.
 - **Hearthstone:** shows where you are bound, where the route wants your hearthstone for your level, and the next level where it changes. With an English game client it also says when your hearthstone is somewhere else.

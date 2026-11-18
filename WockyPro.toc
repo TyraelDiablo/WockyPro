@@ -15,6 +15,7 @@ WockyLocale.lua
 WockyDatabase.lua
 WockyPro.lua
 WockyExtras.lua
+WockyStones.lua
 WockyTools.lua
 WockyTalents.lua
 WockyQuests.lua

@@ -77,7 +77,9 @@ end
 
 local mapSizes = {}
 local function MapSize(mapID)
-    if mapSizes[mapID] ~= nil then return mapSizes[mapID][1], mapSizes[mapID][2] end
+    local known = mapSizes[mapID]
+    if known then return known[1], known[2] end
+    if known == false then return nil end
     local w, h
     pcall(function()
         if C_Map and C_Map.GetMapWorldSize then w, h = C_Map.GetMapWorldSize(mapID) end
@@ -386,16 +388,17 @@ local function UpdateHearth()
     local x = 1
     if W.hsBtn:IsShown() then x = x + 36 end
     if W.ssBtn:IsShown() then x = x + 36 end
+    if W.fsBtn and W.fsBtn:IsShown() then x = x + 36 end
     hearthBtn:ClearAllPoints()
     hearthBtn:SetPoint("TOPLEFT", W.statusRow, "TOPLEFT", x, -1)
 
     local has = (W.BagCounts()[HEARTHSTONE] or 0) > 0
     hearthBtn.icon:SetDesaturated(not has)
     hearthBtn.icon:SetAlpha(has and 1 or 0.45)
+    -- no math on the raw values: in combat they can be secret numbers
     local s, d = W.GetItemCD(HEARTHSTONE)
-    local r = 0
-    if s and d and s > 0 and d > 1.5 then r = math.max(0, s + d - GetTime()) end
-    W.SetStoneCD(hearthBtn, s, d, r)
+    local r = W.CDRemaining and W.CDRemaining(s, d) or -1
+    r = W.SetStoneCD(hearthBtn, s, d, r) or 0
 
     local bind = (GetBindLocation and GetBindLocation()) or "?"
     local hsName
@@ -896,6 +899,11 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "4.2.1", {
+        "Fix: no more Lua error in combat from the Healthstone, Soulstone and Hearthstone icons (the game hides cooldowns in combat; WockyPro now leaves them alone there)",
+        "New Firestone icon next to the Healthstone and Soulstone icons, with count, tooltip and cooldown. It shows once you know Create Firestone or carry a Firestone",
+        "The Healthstone icon pulses green and the Firestone icon pulses orange-red when you have none, like the Soulstone icon"
+    } },
     { "4.2.0", {
         "Route plan: /wocky plan opens a small window for the road ahead",
         "Hearthstone: where you are bound, where the route wants it for your level, and the next change",
