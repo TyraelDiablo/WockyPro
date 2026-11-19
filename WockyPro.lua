@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "5.1.0"
+local VERSION = "5.2.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -1936,7 +1936,7 @@ end)
 ---------------------------------------------------------------------------
 local ApplyAll
 local Settings = CreateFrame("Frame", "WockySettingsFrame", UIParent, "BackdropTemplate")
-Settings:SetSize(660, 496)
+Settings:SetSize(752, 496)
 Settings:SetPoint("CENTER", UIParent, "CENTER", -260, 0)
 Settings:SetFrameStrata("DIALOG")
 Settings:SetMovable(true)
@@ -2290,7 +2290,7 @@ AddButton(pageLang, "RESET_ALL", function()
     ApplyAll()
 end)
 
-local TAB_KEYS = { "TAB_GENERAL", "TAB_DISPLAY", "TAB_MAPTALENT", "TAB_PROF", "TAB_LANG", "TAB_WARLOCK", "TAB_GROUP" }
+local TAB_KEYS = { "TAB_GENERAL", "TAB_DISPLAY", "TAB_MAPTALENT", "TAB_PROF", "TAB_LANG", "TAB_WARLOCK", "TAB_GROUP", "TAB_GEAR" }
 local function SelectTab(index)
     CloseMenu()
     for i, page in ipairs(settingsPages) do
@@ -2725,7 +2725,7 @@ WockyAPI = {
     UpdateWockyGuide = UpdateWockyGuide, ApplyAll = ApplyAll, ToggleSettings = ToggleSettings,
     AddToggle = AddToggle, AddStepper = AddStepper, AddButton = AddButton, AddCycle = AddCycle, RefreshSettings = RefreshSettings,
     LANG_CODES = LANG_CODES, LANG_NAMES = LANG_NAMES,
-    pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap, pageLock = NewPage(), pageGroup = NewPage(),
+    pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap, pageLock = NewPage(), pageGroup = NewPage(), pageGear = NewPage(),
     questHeader = questHeader, profHeader = profHeader, talentHeader = talentHeader,
     shardText = shardText, moneyBtn = moneyBtn,
     GetViewLevel = function() return viewLevel end,

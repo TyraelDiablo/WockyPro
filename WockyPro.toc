@@ -36,3 +36,4 @@ WockySetup.lua
 WockyRoute.lua
 WockyWarlock.lua
 WockyGroup.lua
+WockyGear.lua

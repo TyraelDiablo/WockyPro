@@ -260,6 +260,10 @@ local function BuildReport()
         local ok, info = pcall(W.GroupInfo)
         if ok and info then add("Group: " .. tostring(info)) end
     end
+    if W.GearInfo then
+        local ok, info = pcall(W.GearInfo)
+        if ok and info then add("Gear: " .. tostring(info)) end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

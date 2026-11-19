@@ -1,5 +1,15 @@
 # WockyPro Changelog
 
+## 5.2.0
+- **Gear tab in the settings:** stat weights for Affliction, Demonology and Destruction (spell damage, Stamina, Intellect, Spirit, wand DPS). "Weights for" picks the spec; "Auto" follows the spec of your guide. The upgrade score on item tooltips now uses these weights and names the spec. The starting weights are only an estimate; change them as you like or reset them.
+- **Quest reward choice:** when you turn in a quest with several rewards, the best one for you gets a green "Best" mark and a chat line. If none is an upgrade, the reward that sells best gets a "Sell" mark. Nothing is picked for you.
+- **Loot alert:** a chat line when an item you loot or receive is an upgrade, with the score gain. In combat the line waits until the fight is over.
+- **Wand reminder:** the guide window reminds you when you wear no wand, or when your wand is far below your level (set how far in the Gear tab, default 10 levels).
+- **Upgrades in your bags:** a reminder when a better item you can wear waits in your bags.
+- **`/wocky gear`:** a small window with your weights, your wand (DPS and level), the upgrades in your bags and the last looted upgrades.
+- The tooltip shows "from level X" when you cannot wear the item yet; `/wocky report` has a Gear line; the settings window is a little wider for the new tab
+- No bugs were reported for 5.1.0
+
 ## 5.1.0
 - **Group & dungeon window:** `/wocky group`, a right-click on the dungeon line, or the button in the new **Group** tab of the settings. It lists your group with level, zone, healer, Soulstone and who else uses WockyPro. Click a member to pick your healer.
 - **Soulstone and Healthstones:** shows who has your Soulstone (and the minutes left after you cast it). In a group the guide window reminds you to Soulstone the healer; in a dungeon it counts your Healthstones against the group size (one per player, they can be traded).

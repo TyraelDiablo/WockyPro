@@ -22,6 +22,7 @@ local NATIVE = {
 -- localized highlights for the update notice; versions not listed here show
 -- the first English NEWS lines instead
 local HIGHLIGHTS = {
+    ["5.2.0"] = { "UPD_520_1", "UPD_520_2", "UPD_520_3" },
     ["5.1.0"] = { "UPD_510_1", "UPD_510_2", "UPD_510_3" },
     ["5.0.0"] = { "UPD_500_1", "UPD_500_2", "UPD_500_3" },
     ["4.2.1"] = { "UPD_421_1", "UPD_421_2", "UPD_421_3" },

@@ -582,38 +582,41 @@ local function Score(link, equipLoc)
         stats = (C_Item and C_Item.GetItemStats and C_Item.GetItemStats(link)) or (GetItemStats and GetItemStats(link))
     end)
     if type(stats) ~= "table" then return 0 end
+    -- spec weights from WockyGear.lua (5.2.0), the old fixed weights otherwise
+    local wt = WEIGHTS
+    if W.GetWeights then
+        local ok, t = pcall(W.GetWeights)
+        if ok and type(t) == "table" then wt = t end
+    end
     local s = 0
     for k, v in pairs(stats) do
         local key = string.upper(tostring(k))
         local w
-        if string.find(key, "STAMINA") then w = WEIGHTS.sta
-        elseif string.find(key, "INTELLECT") then w = WEIGHTS.int
-        elseif string.find(key, "SPIRIT") then w = WEIGHTS.spi
+        if string.find(key, "STAMINA") then w = wt.sta
+        elseif string.find(key, "INTELLECT") then w = wt.int
+        elseif string.find(key, "SPIRIT") then w = wt.spi
         elseif string.find(key, "DAMAGE_PER_SECOND") then
-            if equipLoc == "INVTYPE_RANGEDRIGHT" or equipLoc == "INVTYPE_RANGED" then w = WEIGHTS.wand end
-        elseif string.find(key, "SPELL") and (string.find(key, "POWER") or string.find(key, "DAMAGE")) then w = WEIGHTS.sp
+            if equipLoc == "INVTYPE_RANGEDRIGHT" or equipLoc == "INVTYPE_RANGED" then w = wt.wand end
+        elseif string.find(key, "SPELL") and (string.find(key, "POWER") or string.find(key, "DAMAGE")) then w = wt.sp
         end
         if w and type(v) == "number" then s = s + v * w end
     end
     return s
 end
 
-local function AddUpgradeLine(tooltip)
-    if not Cfg("showUpgrade") or not tooltip or not tooltip.GetItem then return end
-    if tooltip ~= GameTooltip and tooltip ~= ItemRefTooltip then return end
-    local _, link = tooltip:GetItem()
-    if not link then return end
+-- Score difference of an item against what you wear in its slot.
+-- Returns diff, emptySlot, minLevel, newScore; nil when Warlocks cannot wear it.
+local function UpgradeDiff(link)
+    if not link then return nil end
     local equipLoc, classID, subclassID = ItemInstant(link)
     local slots = equipLoc and SLOTS[equipLoc]
-    if not slots then return end
-    if USABLE[classID] and not USABLE[classID][subclassID] then return end
-    if not USABLE[classID] then return end
-
+    if not slots then return nil end
+    if not USABLE[classID] or not USABLE[classID][subclassID] then return nil end
     local new = Score(link, equipLoc)
-    local worst, worstLink, empty = nil, nil, false
+    local worst, empty = nil, false
     for _, slot in ipairs(slots) do
         local eq = GetInventoryItemLink("player", slot)
-        if eq == link then return end
+        if eq == link then return nil end
         if not eq then
             empty = true
             worst = 0
@@ -623,11 +626,28 @@ local function AddUpgradeLine(tooltip)
                 local off = GetInventoryItemLink("player", 17)
                 if off then sc = sc + Score(off, "INVTYPE_HOLDABLE") end
             end
-            if not empty and (worst == nil or sc < worst) then worst, worstLink = sc, eq end
+            if not empty and (worst == nil or sc < worst) then worst = sc end
         end
     end
-    if new == 0 and (worst or 0) == 0 then return end
-    local diff = new - (worst or 0)
+    local minLevel
+    pcall(function()
+        local get = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+        local v = select(5, get(link))
+        if type(v) == "number" then minLevel = v end
+    end)
+    return new - (worst or 0), empty, minLevel, new
+end
+W.UpgradeDiff = UpgradeDiff
+W.ItemScore = Score
+
+local function AddUpgradeLine(tooltip)
+    if not Cfg("showUpgrade") or not tooltip or not tooltip.GetItem then return end
+    if tooltip ~= GameTooltip and tooltip ~= ItemRefTooltip then return end
+    local _, link = tooltip:GetItem()
+    if not link then return end
+    local diff, empty, minLevel, new = UpgradeDiff(link)
+    if not diff then return end
+    if new == 0 and diff == 0 then return end
     local text
     if empty then
         text = string.format("|cFF00FF00+%.1f|r |cFF888888(%s)|r", new, L("UPGRADE_EMPTY"))
@@ -638,7 +658,12 @@ local function AddUpgradeLine(tooltip)
     else
         text = "|cFFAAAAAA=|r"
     end
-    tooltip:AddLine("|cFF8787EDWocky:|r " .. text)
+    local level = UnitLevel("player") or 1
+    if minLevel and minLevel > level then
+        text = text .. " |cFFFF8040(" .. L("UPGRADE_LATER", minLevel) .. ")|r"
+    end
+    local spec = W.GearSpecName and W.GearSpecName()
+    tooltip:AddLine("|cFF8787EDWocky" .. (spec and (" (" .. spec .. ")") or "") .. ":|r " .. text)
 end
 
 local tooltipHooked = false
@@ -900,6 +925,13 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "5.2.0", {
+        "Gear tab in the settings: stat weights for Affliction, Demonology and Destruction. The tooltip upgrade score uses the weights of your spec",
+        "Quest rewards: when you turn in a quest, the best reward for you gets a green 'Best' mark; if none is an upgrade, the one that sells best gets a 'Sell' mark",
+        "Loot alert: a chat line when an item you loot is an upgrade (after combat, never during it)",
+        "Wand reminder when you wear no wand or a wand far below your level; reminder when an upgrade waits in your bags",
+        "/wocky gear: your weights, wand, upgrades in your bags and the last looted upgrades"
+    } },
     { "5.1.0", {
         "Group & dungeon window: /wocky group (or right-click the dungeon line) shows your group with level, zone, healer, Soulstone and WockyPro users",
         "Soulstone helper: who has your Soulstone and a reminder to Soulstone the healer; click a member to pick your healer",
