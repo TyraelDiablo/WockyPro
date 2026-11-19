@@ -256,6 +256,10 @@ local function BuildReport()
         local ok, info = pcall(W.WarlockInfo)
         if ok and info then add("Warlock tools: " .. tostring(info)) end
     end
+    if W.GroupInfo then
+        local ok, info = pcall(W.GroupInfo)
+        if ok and info then add("Group: " .. tostring(info)) end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

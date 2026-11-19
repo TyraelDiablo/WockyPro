@@ -292,6 +292,7 @@ function W.QuestSuffix()
 end
 
 local dungeonBtn = CreateFrame("Button", nil, W.WockyUI)
+W.dungeonBtn = dungeonBtn
 dungeonBtn:SetSize(328, 14)
 dungeonBtn:Hide()
 local dungeonText = W.NewFS(dungeonBtn, W.fonts.small)
@@ -899,6 +900,13 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "5.1.0", {
+        "Group & dungeon window: /wocky group (or right-click the dungeon line) shows your group with level, zone, healer, Soulstone and WockyPro users",
+        "Soulstone helper: who has your Soulstone and a reminder to Soulstone the healer; click a member to pick your healer",
+        "Healthstones for the group in dungeons (one per player) and a summon list of far members; a click tells the group whom you summon",
+        "Dungeon quests from your quest log and the quest recorder, click to share them with the group or point the arrow to the giver",
+        "Dungeon run summary (time, XP, kills, money, shards, deaths), a ready check list (/wocky ready) and a new Group tab in the settings"
+    } },
     { "5.0.0", {
         "Warlock tools: /wocky lock (or right-click the shard count) opens a new window for demons, shards, trainer and money",
         "Demon advisor: which of your demons fits now - Voidwalker solo, Felhunter against casters, Imp in a group, Succubus for fast kills (choose in the settings)",

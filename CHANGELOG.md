@@ -1,5 +1,15 @@
 # WockyPro Changelog
 
+## 5.1.0
+- **Group & dungeon window:** `/wocky group`, a right-click on the dungeon line, or the button in the new **Group** tab of the settings. It lists your group with level, zone, healer, Soulstone and who else uses WockyPro. Click a member to pick your healer.
+- **Soulstone and Healthstones:** shows who has your Soulstone (and the minutes left after you cast it). In a group the guide window reminds you to Soulstone the healer; in a dungeon it counts your Healthstones against the group size (one per player, they can be traded).
+- **Summon helper:** members who are far away or in another zone, with your Soul Shards. Click a name to tell the group whom you summon. A reminder appears when members are in another zone.
+- **Dungeon quests:** quests of the dungeons for your level, read from your quest log and the quest recorder (nothing is guessed): ready to turn in, in your log or not taken. Click to share a quest with the group, or to point the arrow to the quest giver.
+- **Dungeon runs:** time, XP, kills, money, Soul Shards and deaths for each dungeon visit, in the chat when you leave (a ghost run back does not end it). `/wocky runs` lists the last runs.
+- **Ready check list:** on a ready check, when you enter a dungeon, or with `/wocky ready`: Healthstone, Soulstone on the healer, demon and shards.
+- **Soulstone announce** (off by default): tells the group whom you gave your Soulstone.
+- `/wocky report` has a Group line; the settings window is a little wider for the new tab
+
 ## 5.0.0
 - **Warlock tools:** a new window for your demons, Soul Shards, trainer and money. Open it with `/wocky lock`, by right-clicking the shard count in the guide window, or with the button in the new **Warlock** tab of the settings.
 - **Demon advisor:** shows which of your demons fits right now: Voidwalker when you play alone, Felhunter when your target casts spells, Imp in a group, Succubus for fast kills if you pick "fast" in the settings. When another demon would fit better, a short reminder says so (out of combat only; turn it off in the settings).
