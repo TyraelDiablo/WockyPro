@@ -1,6 +1,6 @@
 -- WockyPro
 -- The version comes from the .toc (filled in from the git tag when packaged).
-local VERSION = "5.2.0"
+local VERSION = "6.0.0"
 pcall(function()
     local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
     local v = get and get("WockyPro", "Version")
@@ -841,7 +841,7 @@ local function MakeLineWidgets(count)
     return list
 end
 
-local questButtons = MakeLineWidgets(3)
+local questButtons = MakeLineWidgets(6)
 
 -- Simple rows with an icon in the text and a tooltip (professions, talents)
 local function MakeInfoRows(count)
@@ -992,7 +992,7 @@ local function Layout(questCount, profCount, talentCount)
         xpText:SetPoint("TOPLEFT", WockyUI, "TOPLEFT", 16, -y)
         y = y + TextH(xpText) + 4
     end
-    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown() or (WockyAPI and ((WockyAPI.hearthBtn and WockyAPI.hearthBtn:IsShown()) or (WockyAPI.fsBtn and WockyAPI.fsBtn:IsShown())))
+    local stonesVisible = hsBtn:IsShown() or ssBtn:IsShown() or (WockyAPI and ((WockyAPI.hearthBtn and WockyAPI.hearthBtn:IsShown()) or (WockyAPI.fsBtn and WockyAPI.fsBtn:IsShown()) or (WockyAPI.spBtn and WockyAPI.spBtn:IsShown())))
     local moneyVisible = moneyText:IsShown()
     if stonesVisible or moneyVisible then
         local h = stonesVisible and 30 or 16
@@ -1487,6 +1487,11 @@ local GATHER_PROFS = { [182] = true, [186] = true, [393] = true }
 local NO_COLOR_PROFS = { [356] = true }
 
 local function Colorize(text, c)
+    -- colorblind mode (WockyLook.lua) adds a mark next to the color
+    if WockyAPI and WockyAPI.ColorMark then
+        local okM, mark = pcall(WockyAPI.ColorMark, c)
+        if okM and type(mark) == "string" and mark ~= "" then text = text .. " " .. mark end
+    end
     return "|cFF" .. (COLOR_HEX[c] or "FFFFFF") .. text .. "|r"
 end
 
@@ -1876,6 +1881,11 @@ UpdateWockyGuide = function(level)
 
     local raceData = WockyGuideDB and WockyGuideDB[RouteKey()]
     local data = raceData and raceData["L" .. level]
+    -- your own route edits (WockyRouteEdit.lua) replace the level's lines
+    if WockyAPI and WockyAPI.GuideOverride then
+        local okO, over = pcall(WockyAPI.GuideOverride, RouteKey(), level, data)
+        if okO and type(over) == "table" then data = over end
+    end
 
     local qCount
     if data then
@@ -1936,7 +1946,7 @@ end)
 ---------------------------------------------------------------------------
 local ApplyAll
 local Settings = CreateFrame("Frame", "WockySettingsFrame", UIParent, "BackdropTemplate")
-Settings:SetSize(752, 496)
+Settings:SetSize(840, 548)
 Settings:SetPoint("CENTER", UIParent, "CENTER", -260, 0)
 Settings:SetFrameStrata("DIALOG")
 Settings:SetMovable(true)
@@ -1975,7 +1985,7 @@ end
 local function NewPage()
     local page = CreateFrame("Frame", nil, Settings)
     page:SetPoint("TOPLEFT", Settings, "TOPLEFT", 14, -72)
-    page:SetSize(506, 376)
+    page:SetSize(506, 428)
     page.y = 0
     page:Hide()
     settingsPages[#settingsPages + 1] = page
@@ -2290,7 +2300,7 @@ AddButton(pageLang, "RESET_ALL", function()
     ApplyAll()
 end)
 
-local TAB_KEYS = { "TAB_GENERAL", "TAB_DISPLAY", "TAB_MAPTALENT", "TAB_PROF", "TAB_LANG", "TAB_WARLOCK", "TAB_GROUP", "TAB_GEAR" }
+local TAB_KEYS = { "TAB_GENERAL", "TAB_DISPLAY", "TAB_MAPTALENT", "TAB_PROF", "TAB_LANG", "TAB_WARLOCK", "TAB_GROUP", "TAB_GEAR", "TAB_UI" }
 local function SelectTab(index)
     CloseMenu()
     for i, page in ipairs(settingsPages) do
@@ -2602,6 +2612,8 @@ for _, ev in ipairs({ "PLAYER_XP_UPDATE", "UPDATE_EXHAUSTION", "UNIT_PET", "TRAI
 end
 eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "PLAYER_LOGIN" then
+        -- profiles (WockyLook.lua) pick this character's settings first
+        if WockyAPI and WockyAPI.BeforeInit then pcall(WockyAPI.BeforeInit) end
         InitDB()
         local _, className = UnitClass("player")
         WockyUI:ClearAllPoints()
@@ -2725,7 +2737,10 @@ WockyAPI = {
     UpdateWockyGuide = UpdateWockyGuide, ApplyAll = ApplyAll, ToggleSettings = ToggleSettings,
     AddToggle = AddToggle, AddStepper = AddStepper, AddButton = AddButton, AddCycle = AddCycle, RefreshSettings = RefreshSettings,
     LANG_CODES = LANG_CODES, LANG_NAMES = LANG_NAMES,
-    pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap, pageLock = NewPage(), pageGroup = NewPage(), pageGear = NewPage(),
+    pageGeneral = pageGeneral, pageDisplay = pageDisplay, pageMap = pageMap, pageLock = NewPage(), pageGroup = NewPage(), pageGear = NewPage(), pageUI = NewPage(),
+    COLOR_HEX = COLOR_HEX, questButtons = questButtons, profRows = profRows, talentRows = talentRows,
+    xpBar = xpBar, xpText = xpText, remindText = remindText, settingsFrame = Settings,
+    ACCENT_RGB = function() return ACCENTS[Cfg("accent")] or ACCENTS[1] end,
     questHeader = questHeader, profHeader = profHeader, talentHeader = talentHeader,
     shardText = shardText, moneyBtn = moneyBtn,
     GetViewLevel = function() return viewLevel end,

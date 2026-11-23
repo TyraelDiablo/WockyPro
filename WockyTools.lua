@@ -264,6 +264,13 @@ local function BuildReport()
         local ok, info = pcall(W.GearInfo)
         if ok and info then add("Gear: " .. tostring(info)) end
     end
+    for _, e in ipairs({ { "Route edits", "TogetherInfo" }, { "Look", "LookInfo" }, { "Stats", "StatsInfo" }, { "Addons", "LinksInfo" } }) do
+        local fn = W[e[2]]
+        if fn then
+            local ok, info = pcall(fn)
+            if ok and info then add(e[1] .. ": " .. tostring(info)) end
+        end
+    end
     local profs = {}
     pcall(function()
         for _, p in pairs(W.DetectProfessions() or {}) do

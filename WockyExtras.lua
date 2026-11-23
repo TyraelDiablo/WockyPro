@@ -112,6 +112,11 @@ local function PlayerPosOn(mapID)
     if px and py and px > 0 and px < 1 and py > 0 and py < 1 then return px, py end
 end
 
+-- for the HUD strip (WockyLook.lua)
+W.ArrowTarget = ActiveTarget
+W.ArrowPlayerPos = PlayerPosOn
+W.ArrowMapSize = MapSize
+
 local function ClearManual(announce)
     manualTarget = nil
     RefreshArrowShown()
@@ -162,7 +167,12 @@ arrow:SetScript("OnUpdate", function(self, elapsed)
         local r = math.min(1, off * 2)
         local g = math.min(1, (1 - off) * 2)
         pcall(arrowTex.SetRotation, arrowTex, angle)
-        arrowTex:SetVertexColor(r, g, 0.1)
+        if Cfg("colorblind") then
+            -- blue when you face the target, yellow when you face away
+            arrowTex:SetVertexColor(0.3 + 0.7 * off, 0.6 + 0.25 * off, 1 - 0.9 * off)
+        else
+            arrowTex:SetVertexColor(r, g, 0.1)
+        end
         arrowTex:Show()
     else
         arrowTex:Hide()
@@ -299,6 +309,7 @@ local dungeonText = W.NewFS(dungeonBtn, W.fonts.small)
 dungeonText:SetPoint("TOPLEFT", dungeonBtn, "TOPLEFT", 0, 0)
 dungeonText:SetWidth(328)
 dungeonText:SetJustifyH("LEFT")
+W.dungeonText = dungeonText
 local dungeonTip = {}
 local dungeonZone
 
@@ -390,6 +401,7 @@ local function UpdateHearth()
     if W.hsBtn:IsShown() then x = x + 36 end
     if W.ssBtn:IsShown() then x = x + 36 end
     if W.fsBtn and W.fsBtn:IsShown() then x = x + 36 end
+    if W.spBtn and W.spBtn:IsShown() then x = x + 36 end
     hearthBtn:ClearAllPoints()
     hearthBtn:SetPoint("TOPLEFT", W.statusRow, "TOPLEFT", x, -1)
 
@@ -925,6 +937,15 @@ end
 -- Help, news and the update notice
 ---------------------------------------------------------------------------
 local NEWS = {
+    { "6.0.0", {
+        "Route editor: /wocky edit (or the button in the Map & Talents tab) - add, remove and move the lines of a level, set the arrow target where you stand",
+        "Import / export: your route edits as text to share; level together: see the level and lines of group members with WockyPro, share ticks if you like",
+        "Spellstone icon next to the Firestone icon: pulses blue with a blinking frame when you have none, the window border blinks too (option), reminder to put it in your off-hand",
+        "New Interface tab: profiles (account or this character, copy settings), HUD strip (/wocky hud), themes, colorblind mode, window width",
+        "Level history (/wocky stats): time per level as a chart, quest and kill XP, money and deaths; session summary when you log out",
+        "Gear by level (/wocky items): good items for 10-19 ... 50-60 saved from loot, quests and crafting; Warlock loot in the dungeon line tooltip",
+        "Questie (quest spots), TomTom (arrow choice) and LibDataBroker (a button for Titan Panel and the like)"
+    } },
     { "5.2.0", {
         "Gear tab in the settings: stat weights for Affliction, Demonology and Destruction. The tooltip upgrade score uses the weights of your spec",
         "Quest rewards: when you turn in a quest, the best reward for you gets a green 'Best' mark; if none is an upgrade, the one that sells best gets a 'Sell' mark",

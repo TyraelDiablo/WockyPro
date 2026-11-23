@@ -470,6 +470,7 @@ for i = 1, MAX_ROWS do
     stepRows[i] = b
 end
 
+W.questStepRows = stepRows
 local shownSteps = 0
 
 local function StepName(step)
@@ -492,7 +493,13 @@ local function UpdateSteps(level)
         if isDone then
             done = done + 1
         else
-            if not target and step.zone and step.x and step.y then target = step end
+            if not target and step.zone and step.x and step.y then
+                target = step
+            elseif not target and QUEST_KINDS[step[1]] and W.QuestieSpot then
+                -- no position in the route: ask Questie (WockyLinks.lua), if it is loaded
+                local okQ, spot = pcall(W.QuestieSpot, step[2], step[1])
+                if okQ and type(spot) == "table" and spot.zone then target = spot end
+            end
             if #rows < MAX_ROWS then rows[#rows + 1] = { step = step, i = i, detail = detail, tip = tip } end
         end
     end

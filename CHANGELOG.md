@@ -1,5 +1,44 @@
 # WockyPro Changelog
 
+## 6.0.0
+This version brings everything that was planned up to the class modules in one update.
+
+**Spellstone**
+- **Spellstone icon:** a new icon after the Firestone icon, in the same style, with count, tooltip and cooldown. It shows when you know Create Spellstone or carry a Spellstone.
+- **Frame alarm:** while you have no Spellstone, the icon pulses blue and a blue frame blinks around it. The border of the guide window blinks blue too (out of combat only); turn this off in the Warlock tab ("Spellstone alarm").
+- A reminder when a Spellstone waits in your bags: it only works from the off-hand slot.
+
+**Your own route**
+- **Route editor:** `/wocky edit` (or the button in the Map & Talents tab). Add, remove and move the lines of a level (up to 6), and set the level's arrow target to where you stand. Your lines replace the route lines of that level; "Reset level" brings them back. Changing the lines of a level clears its ticks.
+- **Import / export:** `/wocky export` gives your route edits as text to share (Discord etc.), `/wocky import` reads such a text.
+- **Level together:** in a group, a line under the dungeon line shows the level and lines done of members who use WockyPro 6.0 or newer. **Shared ticks** (off by default, Group tab): when a member on the same route ticks a line, it is ticked for you too.
+
+**Interface tab (new)**
+- **Profiles:** settings for the whole account or for this character only; copy the settings of another character or of the account.
+- **HUD mode:** `/wocky hud` - a small strip with your level, the next open line and an arrow instead of the big window. Left-click ticks the line, right-click opens the full window.
+- **Themes:** Warlock purple, plain, classic WoW frame or flat (ElvUI-like).
+- **Colorblind mode:** other recipe colors with marks (+++ / ++ / +) and a blue-yellow arrow.
+- **Window width:** 300 to 560.
+
+**Level history**
+- `/wocky stats` (or the button in the Interface tab): a chart with the time of each level, colored by where the XP came from (quests, kills, other). Point at a bar for the details: time, XP split, money and deaths of that level.
+- **Session summary:** levels, XP, money, time, deaths and XP per hour of this login. `/wocky session` prints it; it also shows in the chat when you log out (option).
+
+**Gear by level**
+- **Gear by level:** `/wocky items` (or the button in the Gear tab of the settings) opens a window with good items a Warlock can wear for 10-19, 20-29, 30-39, 40-49 and 50-60. The `<` and `>` buttons change the levels. Each line shows the level, the score for your spec (green when it is an upgrade for you now) and where the item comes from: quest, dungeon, crafted, vendor or drop. Point at a line to see the item.
+- **Saved while you play:** items you can wear (green or better, quest rewards also white) are saved from your loot, from quest rewards (also the ones you did not pick, when the quest window shows them), from crafting and from vendor buys. Nothing is guessed and nothing runs in combat; the list is kept for all your characters. Turn it off in the Gear tab.
+- **Dungeon loot in the tooltip:** the dungeon line tooltip now lists good Warlock loot of each dungeon for your level: items that dropped while you or your group were inside (loot window, loot and roll messages). Turn it off in the Gear tab.
+- **Checked list:** a place for checked Forever items per level range and dungeon (`WockyGearData.lua`). It is still empty: `/wocky items export` gives the saved items as text in the same format, so they can be checked and added. `/wocky items clear` empties the saved list.
+
+**Other addons**
+- **Questie:** quest steps without a position take the quest giver or turn-in position from Questie, when it is loaded (option).
+- **TomTom:** choose where the guide target goes: the WockyPro arrow, TomTom, or both.
+- **LibDataBroker:** a WockyPro button for Titan Panel, ChocolateBar and similar bars (level and lines done); left-click shows the guide, right-click the settings.
+
+**Other**
+- `/wocky report` lists the new parts; the settings window is a little wider and taller for the new tab
+- No bugs were reported for 5.2.0
+
 ## 5.2.0
 - **Gear tab in the settings:** stat weights for Affliction, Demonology and Destruction (spell damage, Stamina, Intellect, Spirit, wand DPS). "Weights for" picks the spec; "Auto" follows the spec of your guide. The upgrade score on item tooltips now uses these weights and names the spec. The starting weights are only an estimate; change them as you like or reset them.
 - **Quest reward choice:** when you turn in a quest with several rewards, the best one for you gets a green "Best" mark and a chat line. If none is an upgrade, the reward that sells best gets a "Sell" mark. Nothing is picked for you.
